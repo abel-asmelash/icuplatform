@@ -13,8 +13,47 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ICU Q&A Platform",
-  description: "Q and A church platform",
+  title: {
+    default: "ICU Forum",
+    template: "%s | ICU Forum",
+  },
+  description:
+    "A multicultural Christian Q&A platform by ICU Church in Gouda, Netherlands. Ask questions, share knowledge, grow in faith, and connect with the community.",
+
+  keywords: [
+    "ICU Church",
+    "Christian forum",
+    "Church Q&A",
+    "Bible discussion",
+    "Christian community",
+    "Multicultural church",
+    "Gouda church",
+    "Faith platform",
+  ],
+
+  authors: [{ name: "ICU Church" }],
+
+  openGraph: {
+    title: "ICU Forum",
+    description:
+      "A multicultural Christian Q&A platform by ICU Church in Gouda, Netherlands.",
+    url: "https://your-domain.com",
+    siteName: "ICU Forum",
+    locale: "en_US",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "ICU Forum",
+      },
+    ],
+  },
+
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
@@ -27,7 +66,9 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col bg-white text-black">
+        {children}
+      </body>
     </html>
   );
 }
