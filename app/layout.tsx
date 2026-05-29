@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Figtree, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/navigation/navbar";
+import { Providers } from "@/components/providers";
 
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -68,6 +69,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={cn(
         "h-full antialiased",
         figtree.variable,
@@ -77,9 +79,11 @@ export default function RootLayout({
         "font-sans",
       )}
     >
-      <body className="min-h-full flex flex-col bg-white text-black">
-        <Navbar />
-        {children}
+      <body className="min-h-full flex flex-col bg-background text-foreground">
+        <Providers>
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html>
   );
