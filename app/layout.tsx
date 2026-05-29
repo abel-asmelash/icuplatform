@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Figtree } from "next/font/google";
+import { Geist, Geist_Mono, Figtree, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import Navbar from "@/components/navigation/navbar";
 
-const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
+const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-space-grotesk",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,7 +29,6 @@ export const metadata: Metadata = {
   },
   description:
     "A multicultural Christian Q&A platform by ICU Church in Gouda, Netherlands. Ask questions, share knowledge, grow in faith, and connect with the community.",
-
   keywords: [
     "ICU Church",
     "Christian forum",
@@ -33,9 +39,7 @@ export const metadata: Metadata = {
     "Gouda church",
     "Faith platform",
   ],
-
   authors: [{ name: "ICU Church" }],
-
   openGraph: {
     title: "ICU Forum",
     description:
@@ -53,7 +57,6 @@ export const metadata: Metadata = {
       },
     ],
   },
-
   icons: {
     icon: "/favicon.ico",
   },
@@ -61,15 +64,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", figtree.variable)}
+      className={cn(
+        "h-full antialiased",
+        figtree.variable,
+        spaceGrotesk.variable,
+        geistSans.variable,
+        geistMono.variable,
+        "font-sans",
+      )}
     >
       <body className="min-h-full flex flex-col bg-white text-black">
+        <Navbar />
         {children}
       </body>
     </html>

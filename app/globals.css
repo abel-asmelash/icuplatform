@@ -128,3 +128,66 @@
     @apply font-sans;
   }
 }
+
+@layer utilities {
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+  .flex-between {
+    @apply flex items-center justify-between;
+  }
+  .h1-bold {
+    @apply text-[36px] font-bold leading-[50px] tracking-tighter;
+  }
+  .h2-bold {
+    @apply text-[24px] font-bold leading-[31px];
+  }
+  .h3-bold {
+    @apply text-[20px] font-bold leading-[26px];
+  }
+  .base-medium {
+    @apply text-[18px] font-medium leading-[25px];
+  }
+  .base-semibold {
+    @apply text-[18px] font-semibold leading-[25px];
+  }
+  .body-medium {
+    @apply text-[16px] font-medium leading-[22px];
+  }
+  .small-medium {
+    @apply text-[14px] font-medium leading-[18px];
+  }
+  .small-regular {
+    @apply text-[14px] font-normal leading-[18px];
+  }
+}
+
+@layer components {
+  .background-light900_dark200 {
+    @apply bg-white dark:bg-[#0f1117];
+  }
+  .background-light800_dark400 {
+    @apply bg-[#f4f6f8] dark:bg-[#212734];
+  }
+  .text-dark-100 {
+    @apply text-[#000000];
+  }
+  .text-dark-500 {
+    @apply text-[#3d3d3d];
+  }
+  .text-light-900 {
+    @apply text-[#ffffff];
+  }
+  .text-light-500 {
+    @apply text-[#858ead];
+  }
+  .text-primary-500 {
+    @apply text-[#ff7000];
+  }
+  .shadow-light-300 {
+    @apply shadow-[0px_3px_10px_0px_rgba(0,0,0,0.07)];
+  }
+  .font-space-grotesk {
+    font-family: var(--font-space-grotesk);
+  }
+}
