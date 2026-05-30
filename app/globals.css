@@ -191,7 +191,7 @@
     font-family: var(--font-space-grotesk);
   }
 }
-@theme {
+/* @theme {
   --background-image-auth-light: url("/assets/auth-bg.svg");
   --background-image-auth-dark: url("/assets/auth-bg.svg");
-}
+} */
