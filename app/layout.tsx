@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Figtree, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import Navbar from "@/components/navigation/navbar";
+// import Navbar from "@/components/navigation/navbar";
 import { Providers } from "@/components/providers";
 
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
@@ -67,19 +67,18 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={cn(
-        "h-full antialiased",
-        figtree.variable,
-        spaceGrotesk.variable,
-        geistSans.variable,
-        geistMono.variable,
-        "font-sans",
-      )}
-    >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+    <html lang="en" suppressHydrationWarning>
+      <body
+        suppressHydrationWarning
+        className={cn(
+          "min-h-full flex flex-col bg-background text-foreground h-full antialiased",
+          figtree.variable,
+          spaceGrotesk.variable,
+          geistSans.variable,
+          geistMono.variable,
+          "font-sans",
+        )}
+      >
         <Providers>{children}</Providers>
       </body>
     </html>
