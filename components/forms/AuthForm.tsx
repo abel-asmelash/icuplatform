@@ -1,11 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { DefaultValues, FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
- import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 
 import {
   Form,
@@ -23,21 +23,32 @@ const formSchema = z.object({
   }),
 });
 
-const AuthForm = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: "",
-    },
+interface AuthFormProps<T extends FieldValues> {
+  schema: ZodType<T>;
+  defaultValues: T;
+  onSubmit: (data: T) => Promise<{ success: boolean }>;
+  formType: "SIGN_IN" | "SIGN_UP";
+}
+
+const AuthForm = <T extends FieldValues>({
+  schema,
+  defaultValues,
+  formType,
+  onSubmit,
+}: AuthFormProps<T>) => {
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: defaultValues as DefaultValues<T>
+       
+    
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
-
+ const handleSubmit:SubmitHandler<T> = async () => {};
+const buttonText = formType === 'SIGN_IN' ? 'SIGN_IN' : "SIGN_UP";
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+        {buttonText}
         <FormField
           control={form.control}
           name="username"
