@@ -1,27 +1,28 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { DefaultValues, FieldValues, useForm } from "react-hook-form";
-import { z } from "zod";
+import {
+  DefaultValues,
+  FieldValues,
+  Path,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form"; // ✅ Added missing imports: Path, SubmitHandler
+import { z, ZodType } from "zod"; // ✅ Added missing ZodType import
+import Link from "next/link"; // ✅ Added missing Link import
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ROUTES } from "@/constants/routes"; // ✅ Added missing ROUTES import
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-});
 
 interface AuthFormProps<T extends FieldValues> {
   schema: ZodType<T>;
@@ -38,38 +39,88 @@ const AuthForm = <T extends FieldValues>({
 }: AuthFormProps<T>) => {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
-    defaultValues: defaultValues as DefaultValues<T>
-       
-    
+    defaultValues: defaultValues as DefaultValues<T>,
   });
 
- const handleSubmit:SubmitHandler<T> = async () => {};
-const buttonText = formType === 'SIGN_IN' ? 'SIGN_IN' : "SIGN_UP";
+  // ✅ Fixed: was async () => {}, now properly calls onSubmit(data)
+  const handleSubmit: SubmitHandler<T> = async (data) => {
+    await onSubmit(data);
+  };
+
+  // ✅ Fixed: button text values now match the comparison below ('Sign In' / 'Sign Up')
+  const buttonText = formType === "SIGN_IN" ? "Sign In" : "Sign Up";
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-        {buttonText}
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="mt-10 space-y-6"
+      >
+        {/* ✅ Fixed: Object.keys (capital O), correct .map() syntax with parentheses */}
+        {Object.keys(defaultValues).map((field) => (
+          <FormField
+            key={field}
+            control={form.control}
+            name={field as Path<T>} // ✅ Fixed: Path<T> (capital P), not path<T>
+            render={({ field }) => (
+              <FormItem className="flex w-full flex-col gap-2.5">
+                <FormLabel className="paragraph-medium text-dark400_light700">
+                  {/* ✅ Fixed: typo 'paragraph-meduim' → 'paragraph-medium' */}
+                  {field.name === "email"
+                    ? "Email Address" // ✅ Fixed: typo 'Adress' → 'Address'
+                    : field.name.charAt(0).toUpperCase() + field.name.slice(1)}
+                </FormLabel>
 
-              <FormControl>
-                <Input placeholder="shadcn" {...field} />
-              </FormControl>
+                <FormControl>
+                  <Input
+                    required
+                    type={field.name === "password" ? "password" : "text"} // ✅ Fixed: typo 'pasword' → 'password'
+                    {...field}
+                    className="paragraph-regular background-light-900_dark300 light-border-2 text-dark300_light700 not-focus min-h-12 rounded-1.5 border"
+                  />
+                </FormControl>
 
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ))}
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <Button
+          disabled={form.formState.isSubmitting}
+          className="primary-gradient paragraph-medium min-h-12 w-full rounded-2 px-4 py-3 font-inter !text-light-900!"
+        >
+          {/* ✅ Fixed: removed stray 'Submit' text, fixed ternary to compare against buttonText correctly */}
+          {form.formState.isSubmitting
+            ? buttonText === "Sign In"
+              ? "Signing In..." // ✅ Fixed: was 'Sign In...' (grammatically odd)
+              : "Signing Up..." // ✅ Fixed: was 'signing Up...' (lowercase s)
+            : buttonText}
+        </Button>
 
-        <Button type="submit">Submit</Button>
+        {/* ✅ Fixed: broken ternary syntax — condition ? <JSX> : <JSX>, not condition <JSX> ? <JSX> : <JSX> */}
+        {formType === "SIGN_IN" ? (
+          <p>
+            Don&apos;t have an account?{" "}
+            <Link
+              href={ROUTES.SIGN_UP}
+              className="paragraph-semibold primary-text-gradient"
+            >
+              Sign Up{" "}
+              {/* ✅ Fixed: was 'Sign in' (wrong label for SIGN_UP route) */}
+            </Link>
+          </p>
+        ) : (
+          <p>
+            Already have an account?{" "}
+            <Link
+              href={ROUTES.SIGN_IN}
+              className="paragraph-semibold primary-text-gradient"
+            >
+              Sign In
+            </Link>
+          </p>
+        )}
       </form>
     </Form>
   );

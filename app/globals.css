@@ -195,3 +195,31 @@
   --background-image-auth-light: url("/assets/auth-bg.svg");
   --background-image-auth-dark: url("/assets/auth-bg.svg");
 } */
+/* new added */
+@layer utilities {
+  /* ... your existing utilities ... */
+
+  .paragraph-semibold {
+    @apply text-[16px] font-semibold leading-[20px];
+  }
+
+  .paragraph-medium {
+    @apply text-[16px] font-medium leading-[20px];
+  }
+
+  .paragraph-regular {
+    @apply text-[16px] font-normal leading-[20px];
+  }
+
+  .primary-text-gradient {
+    background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .primary-gradient {
+    background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
+  }
+}
+ 

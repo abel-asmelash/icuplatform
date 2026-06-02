@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+ import React from "react";
 import AuthForm from "@/components/forms/AuthForm";
 import { signInSchema } from "@/lib/validations";
 const SignIn = () => {
