@@ -16,7 +16,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
             </p>
           </div>
           <Image
-            src="/assets/icu-icon.png"
+            src="/assets/icu-logo.svg"
             alt="icu logo"
             width={100}
             height={100}

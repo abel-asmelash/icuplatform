@@ -1,9 +1,7 @@
 "use client";
-
 import React from "react";
 import AuthForm from "@/components/forms/AuthForm";
 import { signUpSchema } from "@/lib/validations";
-
 const SignUp = () => {
   return (
     <AuthForm
@@ -16,4 +14,3 @@ const SignUp = () => {
 };
 
 export default SignUp;
- 
