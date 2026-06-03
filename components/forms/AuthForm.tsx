@@ -42,12 +42,10 @@ const AuthForm = <T extends FieldValues>({
     defaultValues: defaultValues as DefaultValues<T>,
   });
 
-  // ✅ Fixed: was async () => {}, now properly calls onSubmit(data)
   const handleSubmit: SubmitHandler<T> = async (data) => {
     await onSubmit(data);
   };
 
-  // ✅ Fixed: button text values now match the comparison below ('Sign In' / 'Sign Up')
   const buttonText = formType === "SIGN_IN" ? "Sign In" : "Sign Up";
 
   return (
