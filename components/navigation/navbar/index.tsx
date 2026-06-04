@@ -9,7 +9,7 @@ const Navbar = () => {
       <Link href="/" className="flex items-center gap-3">
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-500 shadow-lg">
           <Image
-            src="/assets/icu-logo.svg"
+            src="/assets/icu-logo.png"
             alt="ICU icon"
             width={28}
             height={28}

@@ -190,6 +190,41 @@
   .font-space-grotesk {
     font-family: var(--font-space-grotesk);
   }
+  /* newly added */
+  .background-light850_dark100 {
+    @apply bg-[#f4f6f8] dark:bg-[#09090a];
+  }
+
+  .light-border {
+    @apply border-[#f4f6f8] dark:border-[#1f2937];
+  }
+
+  .light-border-2 {
+    @apply border-[#e4e6f0] dark:border-[#2d2f3a];
+  }
+
+  .text-dark400_light900 {
+    @apply text-[#3d3d3d] dark:text-[#ffffff];
+  }
+
+  .btn-secondary {
+    @apply bg-[#f4f6f8] dark:bg-[#212734];
+  }
+
+  .btn-tertiary {
+    @apply bg-transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #858ead;
+    border-radius: 50px;
+  }
 }
 /* @theme {
   --background-image-auth-light: url("/assets/auth-bg.svg");
@@ -222,4 +257,3 @@
     background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
   }
 }
- 

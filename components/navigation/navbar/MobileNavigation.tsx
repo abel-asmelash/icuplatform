@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Image from "next/image";
 import {
   Sheet,
@@ -49,8 +49,7 @@ const MobileNavigation = () => {
           </SheetHeader>
           <SheetClose className="flex flex-col gap-6 pt-16 ">
             <section className="flex h-full flex-col gap-6 pt-16">
-              {/* vav Links is imported here */}
-              <NavLinks isMobileNav/>
+              <NavLinks isMobileNav />
             </section>
           </SheetClose>
           <div className="flex flex-col gap-3">
