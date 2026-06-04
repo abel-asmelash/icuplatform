@@ -5,9 +5,9 @@ import TagCard from "../cards/TagCard";
 
 const hotQuestions = [
   { _id: "1", title: "How to study the bible?" },
-  { _id: "2", title: "How understand the book of Revelation?" },
+  { _id: "2", title: "How to understand the book of Revelation?" },
   { _id: "3", title: "Who are the apostles?" },
-  { _id: "4", title: "Which is the last book in the bible?" },
+  { _id: "4", title: "Who wrote the book of Hebrews?" },
 ];
 
 const popularTags = [
