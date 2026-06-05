@@ -9,7 +9,7 @@ const SignUp = () => {
       formType="SIGN_UP"
       schema={signUpSchema}
       defaultValues={{ email: "", password: "", name: "", username: "" }}
-      onSubmit={(data) => Promise.resolve({ success: true, data })}
+      onSubmit={() => Promise.resolve({ success: true })}
     />
   );
 };

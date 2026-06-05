@@ -2,7 +2,7 @@
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { toast } from "sonner";
-import { ROUTES } from "@/constants/routes";
+import ROUTES from "@/constants/routes";
 const SocialAuthForm = () => {
   const handleSignIn = async (provider: "google") => {
     try {
@@ -16,11 +16,11 @@ const SocialAuthForm = () => {
         window.location.href = result.url;
       }
     } catch (error) {
-      console.log(error);
+      console.error("Social sign-in error:", error);
       toast.error(
         error instanceof Error
           ? error.message
-          : "An error occured during sign-in",
+          : "An error occurred during sign-in",
       );
     }
   }; // ✅ handleSignIn closes here
