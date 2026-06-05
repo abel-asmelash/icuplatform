@@ -2,6 +2,7 @@
 import React from "react";
 import AuthForm from "@/components/forms/AuthForm";
 import { signUpSchema } from "@/lib/validations";
+import { number } from "zod"
 const SignUp = () => {
   return (
     <AuthForm
@@ -14,3 +15,4 @@ const SignUp = () => {
 };
 
 export default SignUp;
+

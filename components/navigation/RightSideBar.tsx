@@ -16,6 +16,8 @@ const popularTags = [
   { _id: "3", name: "new testament", questions: 100 },
   { _id: "4", name: "theology", questions: 100 },
   { _id: "5", name: "greek-bible", questions: 100 },
+  { _id: "6", name: "hebrew-bible", questions: 100 }
+  
 ];
 
 const RightSideBar = () => {

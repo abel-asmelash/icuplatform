@@ -26,7 +26,7 @@ const Navbar = () => {
           </span>
         </div>
       </Link>
-
+            
       <p>Global Search</p>
 
       <div className="flex items-center gap-5">
