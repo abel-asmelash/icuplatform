@@ -6,7 +6,8 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const getTechBibleClassName = (tagName: string) => {
-  if (!tagName) return "fa-book-bible";
+  if (!tagName) return "fa-book-bible"; // prefix added at call site
+
   const normalizedTagName = tagName.replace(/[.\s]/g, "").toLowerCase();
 
   const tagIconMap: { [key: string]: string } = {

@@ -1,9 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@plugin "@tailwindcss/typography";
+@import "@mdxeditor/editor/style.css";
+ 
 
 @custom-variant dark (&:is(.dark *));
- 
 
 @theme inline {
   --color-background: var(--background);
@@ -119,9 +121,10 @@
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+  body {
+    @apply outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -161,6 +164,24 @@
   .small-regular {
     @apply text-[14px] font-normal leading-[18px];
   }
+  .paragraph-semibold {
+    @apply text-[16px] font-semibold leading-[20px];
+  }
+  .paragraph-medium {
+    @apply text-[16px] font-medium leading-[20px];
+  }
+  .paragraph-regular {
+    @apply text-[16px] font-normal leading-[20px];
+  }
+  .primary-text-gradient {
+    background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .primary-gradient {
+    background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
+  }
 }
 
 @layer components {
@@ -169,6 +190,9 @@
   }
   .background-light800_dark400 {
     @apply bg-[#f4f6f8] dark:bg-[#212734];
+  }
+  .background-light850_dark100 {
+    @apply bg-[#f4f6f8] dark:bg-[#09090a];
   }
   .text-dark-100 {
     @apply text-[#000000];
@@ -185,37 +209,27 @@
   .text-primary-500 {
     @apply text-[#ff7000];
   }
+  .text-dark400_light900 {
+    @apply text-[#3d3d3d] dark:text-[#ffffff];
+  }
   .shadow-light-300 {
     @apply shadow-[0px_3px_10px_0px_rgba(0,0,0,0.07)];
   }
   .font-space-grotesk {
     font-family: var(--font-space-grotesk);
   }
-  /* newly added */
-  .background-light850_dark100 {
-    @apply bg-[#f4f6f8] dark:bg-[#09090a];
-  }
-
   .light-border {
     @apply border-[#f4f6f8] dark:border-[#1f2937];
   }
-
   .light-border-2 {
     @apply border-[#e4e6f0] dark:border-[#2d2f3a];
   }
-
-  .text-dark400_light900 {
-    @apply text-[#3d3d3d] dark:text-[#ffffff];
-  }
-
   .btn-secondary {
     @apply bg-[#f4f6f8] dark:bg-[#212734];
   }
-
   .btn-tertiary {
     @apply bg-transparent;
   }
-
   .custom-scrollbar::-webkit-scrollbar {
     width: 3px;
   }
@@ -227,34 +241,120 @@
     border-radius: 50px;
   }
 }
-/* @theme {
-  --background-image-auth-light: url("/assets/auth-bg.svg");
-  --background-image-auth-dark: url("/assets/auth-bg.svg");
-} */
-/* new added */
-@layer utilities {
-  /* ... your existing utilities ... */
+/* ============================
+   MDXEDITOR FIXED OVERRIDES
+   ============================ */
 
-  .paragraph-semibold {
-    @apply text-[16px] font-semibold leading-[20px];
-  }
+/* Editor container */
+.mdxeditor {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+}
 
-  .paragraph-medium {
-    @apply text-[16px] font-medium leading-[20px];
-  }
+/* Content area */
 
-  .paragraph-regular {
-    @apply text-[16px] font-normal leading-[20px];
-  }
+/* ==========================================
+   MDXEDITOR FIXED OVERRIDES (UPDATED)
+   ========================================== */
 
-  .primary-text-gradient {
-    background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+/* Editor container */
+.mdxeditor {
+  background-color: transparent !important; /* Let your background-light800_dark400 handle it */
+}
 
-  .primary-gradient {
-    background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
-  }
+/* Content area canvas */
+.mdxeditor .mdxeditor-root-contenteditable,
+.mdxeditor .mdxeditor-root-contenteditable * {
+  color: var(--foreground) !important;
+  caret-color: var(--foreground) !important;
+}
+
+/* Ensure the flashing text cursor matches the mode */
+.mdxeditor [contenteditable="true"] {
+  caret-color: var(--foreground) !important;
+}
+/* Toolbar container */
+.mdxeditor-toolbar {
+  background-color: var(--card) !important;
+  border-bottom: 1px solid var(--border) !important;
+  padding: 8px 12px !important; /* Increased padding for breathing room */
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important; /* Increased gap between components */
+  flex-wrap: wrap !important;
+}
+
+.mdxeditor-toolbar > div {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important; /* Sets the gap explicitly between grouped tools */
+}
+
+/* Toolbar buttons */
+.mdxeditor-toolbar button {
+  color: var(--foreground) !important;
+  width: 32px !important; /* Slightly wider target for better UI */
+  height: 32px !important; /* Slightly taller target */
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: var(
+    --radius-md
+  ) !important; /* Matches your theme radius token */
+  transition: background-color 0.2s ease;
+}
+
+/* Fix for the overlapping "Paragraph" block select type */
+.mdxeditor-toolbar select,
+.mdxeditor-toolbar [role="combobox"] {
+  color: var(--foreground) !important;
+  background-color: var(--muted) !important;
+  border: 1px solid var(--border) !important;
+  padding: 4px 12px !important; /* Internal padding fixes text layout */
+  margin: 0 4px !important; /* Margin ensures text doesn't crash into dividers */
+  border-radius: var(--radius-sm) !important;
+  height: 32px !important; /* Uniform height matching the buttons */
+  font-size: 14px !important;
+}
+/* Separator styling */
+.mdxeditor-toolbar [role="separator"] {
+  width: 1px !important;
+  height: 20px !important;
+  background-color: var(--border) !important;
+  margin: 0 8px !important; /* Pushes space out around divider line */
+}
+.mdxeditor-toolbar button:hover {
+  background-color: rgba(157, 41, 41, 0.1) !important;
+}
+
+.mdxeditor-toolbar button[data-state="on"] {
+  background-color: rgba(255, 149, 0, 0.2) !important;
+  color: #ff9500 !important;
+}
+
+/* FIX: Only dark mode forces white icons */
+.dark .mdxeditor-toolbar svg {
+  fill: white !important;
+  stroke: white !important;
+}
+
+/* Light mode icons use normal foreground */
+.mdxeditor-toolbar svg {
+  fill: var(--foreground) !important;
+  stroke: var(--foreground) !important;
+}
+
+Separator .mdxeditor-toolbar [role="separator"] {
+  width: 1px !important;
+  height: 20px !important;
+  background-color: var(--border) !important;
+  margin: 0 4px !important;
+}
+
+/* Dropdowns */
+.mdxeditor-toolbar select,
+.mdxeditor-toolbar [role="combobox"] {
+  color: var(--foreground) !important;
+  background-color: var(--muted) !important;
+  border-color: var(--border) !important;
 }
