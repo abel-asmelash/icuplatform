@@ -2,7 +2,7 @@
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { toast } from "sonner";
-import { ROUTES } from "@/constants/routes";
+import  ROUTES  from "@/constants/routes";
 const SocialAuthForm = () => {
   const handleSignIn = async (provider: "google") => {
     try {
