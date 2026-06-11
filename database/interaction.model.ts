@@ -2,8 +2,8 @@ import { Schema, model, models, Types } from "mongoose";
 
 export interface IInteraction {
   user: Types.ObjectId;
-  action: string;
-  actionId: Types.ObjectId;
+  action: string; //what user did, upvote, view post
+  actionId: Types.ObjectId;//what they did on what qn, answer
   actionType: "question" | "answer";
 }
 
