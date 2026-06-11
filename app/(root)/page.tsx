@@ -1,4 +1,4 @@
-"use client";
+// "use client"
 import Link from "next/link";
 import ROUTES from "@/constants/routes";
 import { Button } from "@/components/ui/button";
@@ -6,7 +6,6 @@ import LocalSearch from "@/components/search/LocalSearch";
 import HomeFilter from "@/components/filters/HomeFilter";
 import QuestionCard from "@/components/card/QuestionCard";
 
- 
 const questions = [
   {
     _id: "1",
@@ -36,7 +35,7 @@ const questions = [
   },
 ];
 
-const Home = () => {
+const Home = async () => {
   return (
     <>
       <section className="flex w-full flex-col-reverse sm:flex-row justify-between gap-4 sm:items-center">

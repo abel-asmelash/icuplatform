@@ -12,7 +12,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
             </h1>
             <p className="paragraph-regular text-dark500 light400">
               {" "}
-              To Get Your Biblical Quesions Answered
+              Krijg antwoord op je bijbelse vragen
             </p>
           </div>
           <Image

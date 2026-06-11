@@ -1,3 +1,4 @@
+"use client"
 import { Input } from "../ui/input";
 import Image from "next/image";
 const LocalSearch = () => {
