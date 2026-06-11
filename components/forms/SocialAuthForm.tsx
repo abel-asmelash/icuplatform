@@ -2,7 +2,7 @@
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { toast } from "sonner";
-import  ROUTES  from "@/constants/routes";
+import ROUTES from "@/constants/routes";
 const SocialAuthForm = () => {
   const handleSignIn = async (provider: "google") => {
     try {
@@ -23,10 +23,9 @@ const SocialAuthForm = () => {
           : "An error occured during sign-in",
       );
     }
-  }; // ✅ handleSignIn closes here
+  };
 
   return (
-    // ✅ return is now correctly inside SocialAuthForm
     <div className="mt-10 flex flex-wrap gap-2.5">
       <button
         className="group relative flex min-h-12 flex-1 items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white px-5 py-3 shadow-sm transition-all duration-200 hover:shadow-md hover:border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:hover:border-gray-500"
