@@ -4,7 +4,7 @@ import dbConnect from "@/lib/mongoose";
 import User from "@/database/user.model";
 import { NextResponse } from "next/server";
 import { UserSchema } from "@/lib/validations";
-import { ValidationError } from "@/lib/http-error";
+import { ValidationError, NotFoundError } from "@/lib/http-error";
 
 export async function GET() {
   try {
@@ -17,27 +17,21 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const { email } = await request.json();
+
   try {
     await dbConnect();
-    const body = await request.json();
-    const validationData = UserSchema.safeParse(body);
 
-    if (!validationData.success) {
-      throw new ValidationError(validationData.error.flatten().fieldErrors);
+    const validatedData = UserSchema.partial().safeParse({ email });
+
+    if (!validatedData.success) {
+      throw new ValidationError(validatedData.error.flatten().fieldErrors);
     }
 
-    const { email, username } = validationData.data;  
+    const user = await User.findOne({ email });
+    if (!user) throw new NotFoundError("User");
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      throw new Error("User already exists");  
-    }
-
-    const existingUsername = await User.findOne({ username });
-    if (existingUsername) throw new Error("Username already exists");
-
-    const newUser = await User.create(validationData.data);
-    return NextResponse.json({ success: true, data: newUser }, { status: 201 });
+    return NextResponse.json({ success: true, data: user }, { status: 200 });
   } catch (error) {
     return handleError(error, "api") as APIErrorResponse;
   }
