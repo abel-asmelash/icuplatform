@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import  handleError  from "@/lib/handlers/error";
+import handleError from "@/lib/handlers/error";
 import { NotFoundError, ValidationError } from "@/lib/http-error";
 import dbConnect from "@/lib/mongoose";
 import { AccountSchema } from "@/lib/validations";
