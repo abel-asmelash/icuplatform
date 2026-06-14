@@ -7,8 +7,6 @@ import handleError from "@/lib/handlers/error";
 import { AccountSchema } from "@/lib/validations";
 import { APIErrorResponse } from "@/app/types/global";
 
- 
-
 export async function POST(request: Request) {
   try {
     await dbConnect();
