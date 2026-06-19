@@ -91,7 +91,7 @@ export async function signInWithCredentials(
     );
     if (!passwordMatch) throw new Error("password does not match");
 
-    // wrap signIn to prevent Auth.js internal throws from swallowing success
+     
     try {
       await signIn("credentials", { email, password, redirect: false });
     } catch (signInError) {
