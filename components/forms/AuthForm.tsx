@@ -1,5 +1,4 @@
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   DefaultValues,
@@ -7,14 +6,13 @@ import {
   Path,
   SubmitHandler,
   useForm,
-} from "react-hook-form"; // ✅ Added missing imports: Path, SubmitHandler
-import { z, ZodType } from "zod"; // ✅ Added missing ZodType import
-import Link from "next/link"; // ✅ Added missing Link import
-
+} from "react-hook-form";
+import { ZodType} from "zod";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import  ROUTES  from "@/constants/routes"; // ✅ Added missing ROUTES import
-
+import ROUTES from "@/constants/routes";
+import { useRouter } from "next/navigation";
 import {
   Form,
   FormControl,
@@ -23,56 +21,69 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-interface AuthFormProps<T extends FieldValues> {
-  schema: ZodType<T>;
+import { ActionResponse } from "@/app/types/global";
+import { toast } from "sonner";
+interface AuthFormProps<T extends FieldValues = FieldValues> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  schema: ZodType<T, any, any>;
   defaultValues: T;
-  onSubmit: (data: T) => Promise<{ success: boolean }>;
+  onSubmit: (data: T) => Promise<ActionResponse>;
   formType: "SIGN_IN" | "SIGN_UP";
 }
-
-const AuthForm = <T extends FieldValues>({
+const AuthForm = <T extends FieldValues = FieldValues>({
   schema,
   defaultValues,
   formType,
   onSubmit,
 }: AuthFormProps<T>) => {
-  const form = useForm<z.infer<typeof schema>>({
+  const router = useRouter();
+
+  const form = useForm<T>({
     resolver: zodResolver(schema),
     defaultValues: defaultValues as DefaultValues<T>,
   });
-
   const handleSubmit: SubmitHandler<T> = async (data) => {
-    await onSubmit(data);
+      
+    const result = (await onSubmit(data)) as ActionResponse;
+    
+    if (result?.success) {
+      toast("Success", {
+        description:
+          formType === "SIGN_IN"
+            ? "Signed in successfully"
+            : "Signed up successfully",
+      });
+      router.push(ROUTES.HOME);
+    } else {
+  toast.error("Error", {
+    description: result?.error?.message || "Something went wrong.",
+  });
+    }
   };
-
   const buttonText = formType === "SIGN_IN" ? "Sign In" : "Sign Up";
-
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
         className="mt-10 space-y-6"
       >
-        {/* ✅ Fixed: Object.keys (capital O), correct .map() syntax with parentheses */}
-        {Object.keys(defaultValues).map((field) => (
+        {(Object.keys(defaultValues) as Array<keyof T>).map((key) => (
           <FormField
-            key={field}
+            key={String(key)}
             control={form.control}
-            name={field as Path<T>} // ✅ Fixed: Path<T> (capital P), not path<T>
+            name={key as Path<T>}
             render={({ field }) => (
               <FormItem className="flex w-full flex-col gap-2.5">
                 <FormLabel className="paragraph-medium text-dark400_light700">
-                  {/* ✅ Fixed: typo 'paragraph-meduim' → 'paragraph-medium' */}
                   {field.name === "email"
-                    ? "Email Address" // ✅ Fixed: typo 'Adress' → 'Address'
+                    ? "Email Address"
                     : field.name.charAt(0).toUpperCase() + field.name.slice(1)}
                 </FormLabel>
 
                 <FormControl>
                   <Input
                     required
-                    type={field.name === "password" ? "password" : "text"} // ✅ Fixed: typo 'pasword' → 'password'
+                    type={field.name === "password" ? "password" : "text"}
                     {...field}
                     className="paragraph-regular background-light-900_dark300 light-border-2 text-dark300_light700 not-focus min-h-12 rounded-1.5 border"
                   />
@@ -86,17 +97,15 @@ const AuthForm = <T extends FieldValues>({
 
         <Button
           disabled={form.formState.isSubmitting}
-          className="primary-gradient paragraph-medium min-h-12 w-full rounded-2 px-4 py-3 font-inter !text-light-900!"
+          className="primary-gradient paragraph-medium min-h-12 w-full rounded-2 px-4 py-3 font-inter !text-light-900"
         >
-          {/* ✅ Fixed: removed stray 'Submit' text, fixed ternary to compare against buttonText correctly */}
           {form.formState.isSubmitting
-            ? buttonText === "Sign In"
-              ? "Signing In..." // ✅ Fixed: was 'Sign In...' (grammatically odd)
-              : "Signing Up..." // ✅ Fixed: was 'signing Up...' (lowercase s)
+            ? formType === "SIGN_IN"
+              ? "Signing In..."
+              : "Signing Up..."
             : buttonText}
         </Button>
 
-        {/* ✅ Fixed: broken ternary syntax — condition ? <JSX> : <JSX>, not condition <JSX> ? <JSX> : <JSX> */}
         {formType === "SIGN_IN" ? (
           <p>
             Don&apos;t have an account?{" "}
@@ -104,8 +113,7 @@ const AuthForm = <T extends FieldValues>({
               href={ROUTES.SIGN_UP}
               className="paragraph-semibold primary-text-gradient"
             >
-              Sign Up{" "}
-              {/* ✅ Fixed: was 'Sign in' (wrong label for SIGN_UP route) */}
+              Sign Up
             </Link>
           </p>
         ) : (
