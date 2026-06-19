@@ -4,7 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 // import Navbar from "@/components/navigation/navbar";
 import { Providers } from "@/components/providers";
-
+import {Toaster} from "sonner"
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
 
 const spaceGrotesk = Space_Grotesk({
@@ -86,6 +86,7 @@ export default function RootLayout({
         )}
       >
         <Providers>{children}</Providers>
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );

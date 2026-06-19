@@ -6,7 +6,7 @@ import Google from "next-auth/providers/google";
 import { IAccount } from "./database/account.model";
 import {  IUserDoc } from "@/database/user.model";
 import { api } from "./lib/api";
-import { signInSchema } from "./lib/validations";
+import { SignInSchema } from "./lib/validations";
 import { ActionResponse } from "./app/types/global";
  
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -14,7 +14,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Google,
     Credentials({
       async authorize(credentials) {
-        const validatedFields = signInSchema.safeParse(credentials);
+        const validatedFields = SignInSchema.safeParse(credentials);
 
         if (validatedFields.success) {
           const { email, password } = validatedFields.data;

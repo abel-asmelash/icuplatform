@@ -7,7 +7,7 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import { ZodType} from "zod";
+import { ZodType } from "zod";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,9 +43,8 @@ const AuthForm = <T extends FieldValues = FieldValues>({
     defaultValues: defaultValues as DefaultValues<T>,
   });
   const handleSubmit: SubmitHandler<T> = async (data) => {
-      
     const result = (await onSubmit(data)) as ActionResponse;
-    
+
     if (result?.success) {
       toast("Success", {
         description:
@@ -53,11 +52,12 @@ const AuthForm = <T extends FieldValues = FieldValues>({
             ? "Signed in successfully"
             : "Signed up successfully",
       });
+
       router.push(ROUTES.HOME);
     } else {
-  toast.error("Error", {
-    description: result?.error?.message || "Something went wrong.",
-  });
+      toast.error("Error", {
+        description: result?.error?.message || "Something went wrong.",
+      });
     }
   };
   const buttonText = formType === "SIGN_IN" ? "Sign In" : "Sign Up";

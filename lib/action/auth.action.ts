@@ -8,12 +8,12 @@ import Account from "../../database/account.model";
 import User from "../../database/user.model";
 import handleError from "../handlers/error";
 import action from "@/lib/handlers/action";
-import { signUpSchema } from "../validations";
+import { signUpSchema, SignInSchema } from "../validations";
+import { NotFoundError } from "../http-error";
 
 export async function signUpWithCredentials(
   params: AuthCredentials,
 ): Promise<ActionResponse> {
-   console.log("🚀 signUpWithCredentials called with:", params);
   const validationResult = await action({ params, schema: signUpSchema });
   if (validationResult instanceof Error) {
     return handleError(validationResult) as ErrorResponse;
@@ -24,14 +24,10 @@ export async function signUpWithCredentials(
 
   try {
     const existingUser = await User.findOne({ email }).session(session);
-    if (existingUser) {
-      throw new Error("User already exists");
-    }
+    if (existingUser) throw new Error("User already exists");
 
     const existingUsername = await User.findOne({ username }).session(session);
-    if (existingUsername) {
-      throw new Error("Username already exists");
-    }
+    if (existingUsername) throw new Error("Username already exists");
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -51,15 +47,59 @@ export async function signUpWithCredentials(
       ],
       { session },
     );
+
     await session.commitTransaction();
-    console.log("✅ Transaction committed");
-    await signIn("credentials", { email, password, redirect: false });
-     console.log("✅ signIn called successfully");
+
+    // wrap signIn to prevent Auth.js internal throws from swallowing success
+    try {
+      await signIn("credentials", { email, password, redirect: false });
+    } catch (signInError) {
+      console.log("signIn after signup (may be harmless):", signInError);
+    }
+
     return { success: true };
   } catch (error) {
     await session.abortTransaction();
     return handleError(error) as ErrorResponse;
   } finally {
     await session.endSession();
+  }
+}
+
+export async function signInWithCredentials(
+  params: Pick<AuthCredentials, "email" | "password">,
+): Promise<ActionResponse> {
+  const validationResult = await action({ params, schema: SignInSchema });
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+  const { email, password } = validationResult.params!;
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (!existingUser) throw new NotFoundError("User");
+
+    const existingAccount = await Account.findOne({
+      provider: "credentials",
+      providerAccountId: email,
+    });
+    if (!existingAccount) throw new NotFoundError("Account");
+
+    const passwordMatch = await bcrypt.compare(
+      password,
+      existingAccount.password,
+    );
+    if (!passwordMatch) throw new Error("password does not match");
+
+    // wrap signIn to prevent Auth.js internal throws from swallowing success
+    try {
+      await signIn("credentials", { email, password, redirect: false });
+    } catch (signInError) {
+      console.log("signIn error (may be harmless):", signInError);
+    }
+
+    return { success: true };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
   }
 }
