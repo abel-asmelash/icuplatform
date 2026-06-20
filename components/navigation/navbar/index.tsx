@@ -2,8 +2,11 @@ import Link from "next/link";
 import Theme from "./Theme";
 import Image from "next/image";
 import MobileNavigation from "./MobileNavigation";
+import { auth } from "@/auth";
+import UserAvatar from "@/components/UserAvatar";
 
-const Navbar = () => {
+const Navbar = async() => {
+  const session = await auth()
   return (
     <nav className="flex items-center justify-between fixed z-50 w-full gap-5 p-6 bg-white dark:bg-gray-900 shadow-md sm:px-12">
       <Link href="/" className="flex items-center gap-3">
@@ -31,6 +34,12 @@ const Navbar = () => {
 
       <div className="flex items-center gap-5">
         <Theme />
+        {session?.user?.id && (
+          <UserAvatar id={session.user.id}
+          name={session.user.name!}
+          imageUrl={session.user?.image}
+          />
+        )}
         <MobileNavigation />
       </div>
     </nav>
