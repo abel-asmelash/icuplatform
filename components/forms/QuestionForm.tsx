@@ -1,10 +1,12 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { z } from "zod";  
+import { z } from "zod";
 import { AskQuestionSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
 import dynamic from "next/dynamic";
+import { createQuestion } from "@/lib/action/question.action";
+import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -15,14 +17,19 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import TagCard from "@/components/cards/TagCard";  
-import { useRef } from "react";
+import TagCard from "@/components/cards/TagCard";
+import { useRef, useTransition } from "react";
 import { MDXEditorMethods } from "@mdxeditor/editor";
+import ROUTES from "@/constants/routes";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";  
 
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
 const QuestionForm = () => {
+  const router = useRouter();
   const editorRef = useRef<MDXEditorMethods>(null);
+  const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof AskQuestionSchema>>({
     resolver: zodResolver(AskQuestionSchema),
     defaultValues: {
@@ -32,22 +39,20 @@ const QuestionForm = () => {
     },
   });
 
- 
   const handleInputKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     field: { value: string[]; onChange: (tags: string[]) => void },
   ) => {
-    const tagInput = e.currentTarget.value.trim(); // ✅ moved outside the if block
+    const tagInput = e.currentTarget.value.trim();
 
     if (e.key === "Enter") {
-      e.preventDefault(); // ✅ Bug 2 fixed: was e.prentDefault()
+      e.preventDefault();
 
       if (tagInput && tagInput.length < 15 && !field.value.includes(tagInput)) {
         form.setValue("tags", [...field.value, tagInput]);
         e.currentTarget.value = "";
         form.clearErrors("tags");
       } else if (tagInput.length >= 15) {
-        // ✅ Bug 3 fixed: now reachable
         form.setError("tags", {
           type: "manual",
           message: "Tag should be less than 15 characters",
@@ -61,7 +66,6 @@ const QuestionForm = () => {
     }
   };
 
-  // ✅ Bug 4 fixed: accepts tag and field params
   const handleTagRemove = (
     tag: string,
     field: { value: string[]; onChange: (tags: string[]) => void },
@@ -69,8 +73,20 @@ const QuestionForm = () => {
     field.onChange(field.value.filter((t: string) => t !== tag));
   };
 
-  const handleCreateQuestion = (data: z.infer<typeof AskQuestionSchema>) => {
-    console.log(data)
+  const handleCreateQuestion = async (
+    data: z.infer<typeof AskQuestionSchema>,
+  ) => {
+    startTransition(async () => {
+      const result = await createQuestion(data);
+      if (result.success) {
+        // ✅ Fixed: sonner syntax
+        toast.success("Question created successfully");
+        if (result.data) router.push(ROUTES.QUESTION(result.data._id));
+      } else {
+        // ✅ Fixed: sonner syntax
+        toast.error(result.error?.message || "Something went wrong");
+      }
+    });
   };
 
   return (
@@ -113,7 +129,7 @@ const QuestionForm = () => {
               <FormControl>
                 <div>
                   <Editor
-                    value={field.value}
+                    markdown={field.value}
                     editorRef={editorRef}
                     fieldChange={field.onChange}
                   />
@@ -127,7 +143,6 @@ const QuestionForm = () => {
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="tags"
@@ -136,18 +151,15 @@ const QuestionForm = () => {
               <FormLabel className="paragraph-semibold text-dark400_light800">
                 Tags <span className="text-primary-500">*</span>
               </FormLabel>
-
               <FormControl>
                 <div className="background-light-700_dark300 light-border-2 flex min-h-10 flex-wrap gap-2 rounded-md border px-3 py-2">
                   <input
                     placeholder="Add tags..."
                     className="text-dark300_light700 background-light-700_dark300 no-focus placeholder flex-1 text-sm outline-none"
-                    onKeyDown={(e) => handleInputKeyDown(e, field)}  
+                    onKeyDown={(e) => handleInputKeyDown(e, field)}
                   />
                 </div>
               </FormControl>
-
-          
               {field.value.length > 0 && (
                 <div className="flex-start mt-2.5 flex-wrap gap-2.5">
                   {field.value.map((tag: string) => (
@@ -163,7 +175,6 @@ const QuestionForm = () => {
                   ))}
                 </div>
               )}
-
               <FormDescription className="body-regular text-light-500">
                 Add up to 3 tags to describe what your question is about. You
                 need to press enter to add a tag.
@@ -175,9 +186,18 @@ const QuestionForm = () => {
         <div>
           <Button
             type="submit"
+            disabled={isPending}
             className="primary-gradient w-fit !text-light-900 mt-10"
           >
-            Ask A Question
+            {isPending ? (
+              <>
+               
+                <Loader2 className="mr-2 size-4 animate-spin" />
+                <span>Submitting</span>
+              </>
+            ) : (
+              <>Ask A Question</>
+            )}
           </Button>
         </div>
       </form>

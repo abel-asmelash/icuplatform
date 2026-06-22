@@ -36,14 +36,12 @@ interface Props extends MDXEditorProps {
 }
 
 export default function InitializedMDXEditor({
-  value,
   editorRef,
   fieldChange,
   ...props
 }: Props) {
   return (
     <MDXEditor
-      markdown={value}
       onChange={fieldChange}
       className="background-light800_dark400 light-border-2 grid markdown-editor w-full border min-h-[200px] caret-white"
       plugins={[

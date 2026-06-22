@@ -1,11 +1,5 @@
 import { NextResponse } from "next/server";
 
-interface Question {
-  answer: number;
-  views: number;
-  createdAt: Date;
-}
-
 type ActionResponse<T = null> = {
   success: boolean;
   data?: T;
@@ -20,3 +14,18 @@ type SuccessResponse<T = null> = ActionResponse<T> & { success: true };
 type ErrorResponse = ActionResponse<undefined> & { success: false };
 type APIErrorResponse = NextResponse<ErrorResponse>;
 type APIResponse<T = null> = NextResponse<SuccessResponse<T> | ErrorResponse>;
+
+type RouteParams = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+export type {
+  ActionResponse,
+  SuccessResponse,
+  ErrorResponse,
+  APIErrorResponse,
+  APIResponse,
+  RouteParams,
+};
