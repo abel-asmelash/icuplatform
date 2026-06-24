@@ -29,3 +29,26 @@ export type {
   APIResponse,
   RouteParams,
 };
+declare global {
+interface Tag {
+  _id: string;
+  name: string;
+}
+
+interface Question {
+  _id: string;
+  title: string;
+  content: string;
+  tags: Tag[];
+  views: number;
+  upvotes: number;
+  downvotes: number;
+  answers: number;
+  author: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+type RouteParams ={
+  params: Promise<{id:string}>
+}
+}

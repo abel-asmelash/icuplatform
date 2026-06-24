@@ -25,3 +25,9 @@ interface RouteParams{
     params: Promise<Record<string, string>>
     searchParams:Promise<Record<string, string>>
 }
+export interface EditQuestionParams extends createQuestionParams{
+questionId: string
+}
+ interface GetQuestionParams{
+    questionId: string
+}
