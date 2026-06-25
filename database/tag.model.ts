@@ -1,11 +1,11 @@
-import { Schema, model, models, Types, Document } from "mongoose"; // ✅ import Types and Document
+import { Schema, model, models, Types, Document } from "mongoose";  
 
 export interface ITag {
   name: string;
   questions: number;
 }
 
-// ✅ ITagDoc extends both ITag and Document, with explicit _id
+ 
 export interface ITagDoc extends ITag, Document {
   _id: Types.ObjectId;
 }
