@@ -1,27 +1,42 @@
-// "use client"
 import Link from "next/link";
 import ROUTES from "@/constants/routes";
 import { Button } from "@/components/ui/button";
 import LocalSearch from "@/components/search/LocalSearch";
 import HomeFilter from "@/components/filters/HomeFilter";
 import QuestionCard from "@/components/card/QuestionCard";
+import DataRenderer from "@/components/DataRenderer";
 import { getQuestions } from "@/lib/action/question.action";
- 
+import { EMPTY_QUESTION } from "@/constants/states";
 
 interface SearchParams {
-  searchParams: Promise<{[key: string]: string}>
+  searchParams: Promise<{ [key: string]: string }>;
 }
 
-const Home = async ({searchParams}:SearchParams) => {
-  const {page, pageSize, query, filter} = await searchParams;
-  const {success, data, error} = await getQuestions({
+ 
+interface Question {
+  _id: string;
+  title: string;
+  tags: { _id: string; name: string }[];
+  author: { _id: string; name: string; image: string };
+  createdAt: Date;
+  answers: number;
+  upvotes: number;
+  views: number;
+}
+
+const Home = async ({ searchParams }: SearchParams) => {
+  const { page, pageSize, query, filter } = await searchParams;
+
+  const { success, data, error } = await getQuestions({
     page: Number(page) || 1,
     pageSize: Number(pageSize) || 10,
     query: query || "",
-    filter: filter || ""
-  })
+    filter: filter || "",
+  });
 
-  const  {question: questions} = data || {};
+ 
+   const questions = (data?.question ?? []) as unknown as Question[];
+
   return (
     <>
       <section className="flex w-full flex-col-reverse sm:flex-row justify-between gap-4 sm:items-center">
@@ -33,7 +48,7 @@ const Home = async ({searchParams}:SearchParams) => {
 
       <section className="mt-11">
         <LocalSearch
-          imgSrc="/assets/icons/search.svg"
+          imgSrc="/assets/search.svg"
           placeholder="Zoek vragen..."
           otherClasses="flex-1"
         />
@@ -41,41 +56,19 @@ const Home = async ({searchParams}:SearchParams) => {
 
       <HomeFilter />
 
-      {success ? (
-        <div className="mt-10 flex w-full flex-col gap-6">
-          {questions && questions.length > 0 ? (
-            questions.map((question) => (
-              <QuestionCard
-                key={question._id as string}
-                question={
-                  question as unknown as {
-                    _id: string;
-                    title: string;
-                    tags: { _id: string; name: string }[];
-                    author: { _id: string; name: string; image: string };
-                    createdAt: Date;
-                    answers: number;
-                    upvotes: number;
-                    views: number;
-                  }
-                }
-              />
-            ))
-          ) : (
-            <div className="mt-10 flex w-full items-center justify-center">
-              <p className="text-center text-light-500">
-                Geen vragen Gevonden.
-              </p>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="mt-10 flex w-full items-center justify-center">
-          <p className="text-center text-light-500">
-            {error?.message || "Failed to fetch question"}
-          </p>
-        </div>
-      )}
+      <DataRenderer
+        success={success}
+        error={error}
+        data={questions}
+        empty={EMPTY_QUESTION}
+        render={(questions) => (
+          <div className="mt-10 flex w-full flex-col gap-6">
+            {questions.map((question) => (
+              <QuestionCard key={question._id} question={question} />
+            ))}
+          </div>
+        )}
+      />
     </>
   );
 };

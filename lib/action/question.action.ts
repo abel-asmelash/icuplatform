@@ -17,7 +17,7 @@ import mongoose from "mongoose";
 import Question from "@/database/question.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
 import TagQuestion from "@/database/tag-question.model";
- import  FilterQuery from "mongoose"
+ import  {FilterQuery} from "mongoose"
  import type {PaginatedSearchParams} from "@/types/global"
 export async function createQuestion(
   params: createQuestionParams,
@@ -153,7 +153,7 @@ export async function editQuestion(
     if (tagsToAdd.length > 0) {
       for (const tag of tagsToAdd) {
         const existingTag = await Tag.findOneAndUpdate(
-          { name: { $regex: new RegExp(`^${tag}$`, "i") } },
+          { name: { $regex: `^${tag}$`, $options: "i" } },
           { $setOnInsert: { name: tag }, $inc: { questions: 1 } },
           { upsert: true, new: true, session },
         );
