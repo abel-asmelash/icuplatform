@@ -42,15 +42,17 @@ const Home = async ({ searchParams }: SearchParams) => {
       <section className="flex w-full flex-col-reverse sm:flex-row justify-between gap-4 sm:items-center">
         <h1 className="h1-bold text-3xl text-center mt-5">Alle Vragen</h1>
         <Button className="primary-gradient min-h-10 px-4 py-3 text-light-900 rounded-md">
-          <Link href={ROUTES.ASK_QUESTION}>Stel een vraag</Link>
+          <Link href={ROUTES.ASK_QUESTION}>Stel Een Vraag</Link>
         </Button>
       </section>
 
       <section className="mt-11">
         <LocalSearch
+         route="/"
           imgSrc="/assets/search.svg"
           placeholder="Zoek vragen..."
           otherClasses="flex-1"
+          iconPosition="left" 
         />
       </section>
 

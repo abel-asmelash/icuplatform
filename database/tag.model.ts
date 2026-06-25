@@ -1,8 +1,10 @@
 import { Schema, model, models, Types, Document } from "mongoose";  
+import { string } from "zod";
 
 export interface ITag {
   name: string;
   questions: number;
+  description?: string
 }
 
  
@@ -14,6 +16,7 @@ const TagSchema = new Schema<ITag>(
   {
     name: { type: String, required: true, unique: true },
     questions: { type: Number, default: 0 },
+    description:{type: string, default: ""}
   },
   { timestamps: true },
 );
