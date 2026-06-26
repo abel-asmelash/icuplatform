@@ -30,27 +30,36 @@ export type {
   RouteParams,
 };
 declare global {
-interface Tag {
-  _id: string;
-  name: string;
-}
+  interface Tag {
+    _id: string;
+    name: string;
+  }
 
-interface Question {
-  _id: string;
-  title: string;
-  content: string;
-  tags: Tag[];
-  views: number;
-  upvotes: number;
-  downvotes: number;
-  answers: number;
-  author: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-type RouteParams ={
-  params: Promise<{id:string}>
-}
+  interface Question {
+    _id: string;
+    title: string;
+    content: string;
+    tags: Tag[];
+    views: number;
+    upvotes: number;
+    downvotes: number;
+    answers: number;
+    author: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }
+  type RouteParams = {
+    params: Promise<{ id: string }>;
+  };
+  // types/global.d.ts
+
+  interface GetTagQuestionsParams {
+    tagId: string;
+    page?: number;
+    pageSize?: number;
+    query?: string;
+    filter?: string;
+  }
 }
 export interface PaginatedSearchParams {
   page?: number
@@ -60,3 +69,4 @@ export interface PaginatedSearchParams {
   sort?: string
 
 }
+

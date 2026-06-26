@@ -31,3 +31,6 @@ questionId: string
  interface GetQuestionParams{
     questionId: string
 }
+interface GetQuestionParams extends Omit<PaginatedSearchParams, "filter">{
+    tagId: string
+}

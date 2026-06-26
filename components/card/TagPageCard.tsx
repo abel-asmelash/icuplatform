@@ -1,7 +1,6 @@
 import Link from "next/link";
 import ROUTES from "@/constants/routes";
-import { getTechBibleInfo } from "@/lib/utils"; // ✅ use the updated util that returns {icon, color}
-
+import { getTechBibleInfo } from "@/lib/utils";  
 interface TagPageCardProps {
   _id: string;
   name: string;
