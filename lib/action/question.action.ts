@@ -1,10 +1,14 @@
 "use server";
-import {
+import type {
+  ActionResponse,
+  ErrorResponse,
   createQuestionParams,
   EditQuestionParams,
   GetQuestionParams,
-} from "@/types/action";
-import { ActionResponse, ErrorResponse } from "@/types/global";
+  PaginatedSearchParams,
+  PopulatedQuestion
+} from "@/types/actions";
+ 
 import action from "../handlers/action";
 import {
   AskQuestionSchema,
@@ -13,15 +17,15 @@ import {
   PaginatedSearchParamsSchema,
 } from "../validations";
 import handleError from "../handlers/error";
-import mongoose from "mongoose";
-import Question from "@/database/question.model";
+// import mongoose from "mongoose";
+import Question, { IQuestionDoc } from "@/database/question.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
 import TagQuestion from "@/database/tag-question.model";
- import  {FilterQuery} from "mongoose"
- import type {PaginatedSearchParams} from "@/types/global"
+import mongoose, { type FilterQuery } from "mongoose";
+ 
 export async function createQuestion(
   params: createQuestionParams,
-): Promise<ActionResponse<Question>> {
+): Promise<ActionResponse<IQuestionDoc>> {
   const validationResult = await action({
     params,
     schema: AskQuestionSchema,
@@ -104,7 +108,7 @@ export async function createQuestion(
 
 export async function editQuestion(
   params: EditQuestionParams,
-): Promise<ActionResponse<Question>> {
+): Promise<ActionResponse<IQuestionDoc>> {
   const validationResult = await action({
     params,
     schema: EditQuestionSchema,
@@ -205,7 +209,7 @@ export async function editQuestion(
 
 export async function getQuestion(
   params: GetQuestionParams,
-): Promise<ActionResponse<Question>> {
+): Promise<ActionResponse<PopulatedQuestion>> {
   const validationResult = await action({
     params,
     schema: GetQuestionSchema,
@@ -221,7 +225,8 @@ export async function getQuestion(
   try {
     const question = await Question.findById(questionId)
       .session(session)
-      .populate("tags");
+      .populate("tags")
+      .populate("author", "_id name image");
     if (!question) {
       throw new Error("Question not found");
     }
@@ -233,7 +238,7 @@ export async function getQuestion(
 // part 2
 export async function getQuestions(  
   params: PaginatedSearchParams,
-): Promise<ActionResponse<{ question: Question[]; isNext: boolean }>> {
+): Promise<ActionResponse<{ question: IQuestionDoc[]; isNext: boolean }>> {
 
   const validationResult = await action({
     params,   
