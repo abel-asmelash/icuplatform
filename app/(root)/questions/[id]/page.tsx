@@ -22,6 +22,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
 const { author, createdAt, answers, views, tags, content, title} = question ;
   return (
     <>
+
       <div className="flex-start w-full flex-col">
         <div className="flex w-full flex-col-reverse justify-between">
           <div className="flex items-center justify-start gap-1">
@@ -47,7 +48,7 @@ const { author, createdAt, answers, views, tags, content, title} = question ;
 
         <div className="mb-8 mt-5 flex flex-wrap gap-4">
           <Metric
-            imageUrl="/assets/icons/clock.svg"
+            imageUrl="/assets/clock.svg"
             alt="clock icon"
             value={`asked ${getTimeStamp(new Date(createdAt))}`}
             title=""
@@ -55,7 +56,7 @@ const { author, createdAt, answers, views, tags, content, title} = question ;
           />
 
           <Metric
-            imageUrl="/assets/icons/message.svg"
+            imageUrl="/assets/message-circle.svg"
             alt="answers icon"
             value={answers}
             title="Answers"
@@ -63,7 +64,7 @@ const { author, createdAt, answers, views, tags, content, title} = question ;
           />
 
           <Metric
-            imageUrl="/assets/icons/eye.svg"
+            imageUrl="/assets/eye.svg"
             alt="eye icon"
             value={formatNumber(views)}
             title="Views"
