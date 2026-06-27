@@ -6,23 +6,26 @@ import type {
   EditQuestionParams,
   GetQuestionParams,
   PaginatedSearchParams,
-  PopulatedQuestion
+  PopulatedQuestion,
 } from "@/types/actions";
- 
+
 import action from "../handlers/action";
 import {
   AskQuestionSchema,
   EditQuestionSchema,
   GetQuestionSchema,
+  IncrementViewsSchema,
   PaginatedSearchParamsSchema,
 } from "../validations";
 import handleError from "../handlers/error";
-// import mongoose from "mongoose";
+import { IncrementViewsParams } from "@/types/action";
 import Question, { IQuestionDoc } from "@/database/question.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
 import TagQuestion from "@/database/tag-question.model";
 import mongoose, { type FilterQuery } from "mongoose";
- 
+import { revalidatePath } from "next/cache";
+import ROUTES from "@/constants/routes";
+
 export async function createQuestion(
   params: createQuestionParams,
 ): Promise<ActionResponse<IQuestionDoc>> {
@@ -98,7 +101,7 @@ export async function createQuestion(
     return { success: true, data: JSON.parse(JSON.stringify(question)) };
   } catch (error) {
     if (!committed) {
-      await session.abortTransaction(); 
+      await session.abortTransaction();
     }
     return handleError(error) as ErrorResponse;
   } finally {
@@ -236,31 +239,29 @@ export async function getQuestion(
   }
 }
 // part 2
-export async function getQuestions(  
+export async function getQuestions(
   params: PaginatedSearchParams,
 ): Promise<ActionResponse<{ question: IQuestionDoc[]; isNext: boolean }>> {
-
   const validationResult = await action({
-    params,   
+    params,
     schema: PaginatedSearchParamsSchema,
   });
   if (validationResult instanceof Error) {
     return handleError(validationResult) as ErrorResponse;
   }
 
-  const { page = 1, pageSize = 10, query, filter } = params; 
-  const skip = (Number(page) - 1) * Number(pageSize); 
+  const { page = 1, pageSize = 10, query, filter } = params;
+  const skip = (Number(page) - 1) * Number(pageSize);
   const limit = Number(pageSize);
 
   const filterQuery: FilterQuery<typeof Question> = {};
 
   if (filter === "recommended")
-     
     return { success: true, data: { question: [], isNext: false } };
 
   if (query) {
     filterQuery.$or = [
-      { title: { $regex: new RegExp(query, "i") } }, 
+      { title: { $regex: new RegExp(query, "i") } },
       { content: { $regex: new RegExp(query, "i") } },
     ];
   }
@@ -269,13 +270,13 @@ export async function getQuestions(
 
   switch (filter) {
     case "newest":
-      sortCriteria = { createdAt: -1 }; 
+      sortCriteria = { createdAt: -1 };
       break;
     case "unanswered":
       filterQuery.answers = 0;
       sortCriteria = { createdAt: -1 };
       break;
-    case "popular": 
+    case "popular":
       sortCriteria = { upvotes: -1 };
       break;
     default:
@@ -284,7 +285,7 @@ export async function getQuestions(
   }
 
   try {
-    const totalQuestions = await Question.countDocuments(filterQuery); 
+    const totalQuestions = await Question.countDocuments(filterQuery);
     const questions = await Question.find(filterQuery)
       .populate("tags", "name")
       .populate("author", "name image")
@@ -293,13 +294,42 @@ export async function getQuestions(
       .skip(skip)
       .limit(limit);
 
-    const isNext = totalQuestions > skip + questions.length; 
+    const isNext = totalQuestions > skip + questions.length;
 
     return {
       success: true,
       data: { question: JSON.parse(JSON.stringify(questions)), isNext },
-    }; 
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+// view count
+export async function incrementViews(
+  params: IncrementViewsParams,
+): Promise<ActionResponse<{ views: number }>> {
+  const validationResult = await action({
+    params,
+    schema: IncrementViewsSchema,
+  });
 
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { questionId } = validationResult.params!;
+
+  try {
+    const question = await Question.findById(questionId);  
+    if (!question) throw new Error("Question not found");
+
+    question.views += 1;  
+    await question.save();  
+     revalidatePath(ROUTES.QUESTION(questionId))
+    return {
+      success: true,
+      data: { views: question.views },
+    };
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
