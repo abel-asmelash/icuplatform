@@ -10,6 +10,7 @@ interface MetricProps {
   textStyle?: string;
   href?: string;
   isAuthor?: boolean;
+  imgClassName?: string;
 }
 
 const Metric = ({
@@ -20,6 +21,7 @@ const Metric = ({
   textStyle,
   href,
   isAuthor,
+  imgClassName
 }: MetricProps) => {
   const content = (
     <>
@@ -27,8 +29,8 @@ const Metric = ({
         src={imageUrl}
         alt={alt}
         width={16}
-        height={16}
-        className={`object-contain ${href ? "rounded-full" : ""}`}
+        height={16} 
+        className={cn("object-contain", imgClassName,{"rounded-full": href,})}
       />
       <p className={`${textStyle} flex items-center gap-1`}>
         {value}

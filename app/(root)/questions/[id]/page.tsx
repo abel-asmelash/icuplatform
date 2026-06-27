@@ -22,7 +22,6 @@ const QuestionDetails = async ({ params }: RouteParams) => {
 const { author, createdAt, answers, views, tags, content, title} = question ;
   return (
     <>
-
       <div className="flex-start w-full flex-col">
         <div className="flex w-full flex-col-reverse justify-between">
           <div className="flex items-center justify-start gap-1">
@@ -53,6 +52,7 @@ const { author, createdAt, answers, views, tags, content, title} = question ;
             value={`asked ${getTimeStamp(new Date(createdAt))}`}
             title=""
             textStyle="small-regular text-dark400_light700"
+            imgClassName="dark:invert"
           />
 
           <Metric
@@ -61,6 +61,7 @@ const { author, createdAt, answers, views, tags, content, title} = question ;
             value={answers}
             title="Answers"
             textStyle="small-regular text-dark400_light700"
+            imgClassName="dark:invert"
           />
 
           <Metric
@@ -69,17 +70,18 @@ const { author, createdAt, answers, views, tags, content, title} = question ;
             value={formatNumber(views)}
             title="Views"
             textStyle="small-regular text-dark400_light700"
+            imgClassName="dark:invert"
           />
         </div>
-          <Preview content={content}/>
+        <Preview content={content} />
 
         <div className="mt-8 flex-wrap gap-2">
-          {tags.map((tag) =>(
-            <TagCard 
-            key={tag._id}
-            _id={tag._id as string}
-            name={tag.name}
-            compact
+          {tags.map((tag) => (
+            <TagCard
+              key={tag._id}
+              _id={tag._id as string}
+              name={tag.name}
+              compact
             />
           ))}
         </div>
