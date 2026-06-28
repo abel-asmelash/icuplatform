@@ -27,9 +27,9 @@ import {
   CodeToggle,
   Separator,
 } from "@mdxeditor/editor";
-import "@mdxeditor/editor/style.css";
+// import "@mdxeditor/editor/style.css";
 
-interface Props extends MDXEditorProps {
+interface Props  {
   value: string;
   fieldChange: (value: string) => void;
   editorRef: ForwardedRef<MDXEditorMethods> | null;
@@ -38,12 +38,15 @@ interface Props extends MDXEditorProps {
 export default function InitializedMDXEditor({
   editorRef,
   fieldChange,
-  ...props
+  value,
+ 
+ 
 }: Props) {
   return (
     <MDXEditor
       onChange={fieldChange}
-      className="background-light800_dark400 light-border-2 grid markdown-editor w-full border min-h-[200px] caret-white"
+      markdown={value ?? ""}
+      className="background-light800_dark400 light-border-2 grid markdown-editor w-full border `min-h-50` caret-white"
       plugins={[
         headingsPlugin(),
         listsPlugin(),
@@ -89,8 +92,8 @@ export default function InitializedMDXEditor({
           ),
         }),
       ]}
-      {...props}
-      ref={editorRef}
+    
+      ref={editorRef ?? null}
     />
   );
 }

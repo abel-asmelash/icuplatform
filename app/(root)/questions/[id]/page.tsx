@@ -6,20 +6,26 @@ import TagCard from "@/components/cards/TagCard";
 import Link from "next/link";
 import type { RouteParams } from "@/types/actions";
 import { Preview } from "../../../../components/editor/Preview";
- 
- 
+ import { incrementViews } from "@/lib/action/question.action";
+ import {after} from "next/server"
 import { getQuestion } from "@/lib/action/question.action";
  import { notFound } from "next/navigation";
-
-
+import AnswerForm from "@/components/forms/AnswerForm";
 
 const QuestionDetails = async ({ params }: RouteParams) => {
+    
   const { id } = await params;
-  const { success, data: question } =  await getQuestion({
-    questionId: id,
-  });
+
+  const  {success, data: question} = await getQuestion({questionId: id})
+ 
+ after(async () =>{
+ await incrementViews({ questionId: id })
+ })
+  
   if(!success || !question)  return notFound()
+
 const { author, createdAt, answers, views, tags, content, title} = question ;
+
   return (
     <>
       <div className="flex-start w-full flex-col">
@@ -86,6 +92,9 @@ const { author, createdAt, answers, views, tags, content, title} = question ;
           ))}
         </div>
       </div>
+      <section>
+        <AnswerForm/>
+      </section>
     </>
   );
 };
