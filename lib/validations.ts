@@ -143,3 +143,6 @@ export const IncrementViewsSchema = z.object({
 export const AnswerSchema = z.object({
   content: z.string().min(50,{message: "Answer has to have more than 50 charachters."})
 })
+export const AnswerServerSchema = AnswerSchema.extend({
+  questionId:z.string().min(1, {message: "Question ID is required."})
+})

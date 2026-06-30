@@ -1,10 +1,10 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import z from "zod";
 import { ReloadIcon } from "@radix-ui/react-icons";
-import { Bot } from "lucide-react";  
+import { Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,20 +15,44 @@ import {
 } from "@/components/ui/form";
 import { AnswerSchema } from "@/lib/validations";
 import Editor from "@/components/editor";
+import { createAnswer } from "@/lib/answer.action";
+import { toast } from "sonner";
 
-const AnswerForm = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const AnswerForm = ({ questionId }: { questionId: string }) => {
+  const [isAnswering, startAnsweringTransition] = useTransition();
   const [isAISubmitting, setIsAISubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof AnswerSchema>>({
     resolver: zodResolver(AnswerSchema),
-    defaultValues: {
-      content: "",
-    },
+    defaultValues: { content: "" },
   });
 
   const handleSubmit = async (values: z.infer<typeof AnswerSchema>) => {
-    console.log(values);
+    startAnsweringTransition(async () => {
+      const result = await createAnswer({
+        questionId,
+        content: values.content,
+      });
+      if (result.success) {
+        form.reset();
+        toast.success("Success", {
+          description: "Your answer has been posted succesfully",
+        });
+      } else {
+        toast.error("Error", {
+          description: result.error?.message,
+        });
+      }
+    });
+  };
+
+  const handleGenerateAIAnswer = async () => {
+    setIsAISubmitting(true);
+    try {
+      // call your AI generation server action here
+    } finally {
+      setIsAISubmitting(false);
+    }
   };
 
   return (
@@ -38,6 +62,8 @@ const AnswerForm = () => {
           Schrijf je antwoord hier
         </h4>
         <Button
+          type="button"
+          onClick={handleGenerateAIAnswer}
           className="btn light-border-2 gap-1.5 rounded-md border px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
           disabled={isAISubmitting}
         >
@@ -77,10 +103,10 @@ const AnswerForm = () => {
           <div className="flex justify-end">
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isAnswering}
               className="primary-gradient w-fit"
             >
-              {isSubmitting ? (
+              {isAnswering ? (
                 <>
                   <ReloadIcon className="mr-2 size-4 animate-spin" />
                   Indienen...

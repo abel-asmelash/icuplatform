@@ -93,7 +93,7 @@ const { author, createdAt, answers, views, tags, content, title} = question ;
         </div>
       </div>
       <section>
-        <AnswerForm/>
+        <AnswerForm questionId={question._id}/>
       </section>
     </>
   );
