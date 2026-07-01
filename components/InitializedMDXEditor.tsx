@@ -9,7 +9,7 @@ import {
   markdownShortcutPlugin,
   MDXEditor,
   type MDXEditorMethods,
-  type MDXEditorProps,
+  // type MDXEditorProps,
   toolbarPlugin,
   ConditionalContents,
   UndoRedo,
@@ -17,12 +17,12 @@ import {
   ChangeCodeMirrorLanguage,
   codeBlockPlugin,
   codeMirrorPlugin,
-  CreateLink,
+  // CreateLink,
   linkPlugin,
   linkDialogPlugin,
   ListsToggle,
-  InsertImage,
-  imagePlugin,
+  // InsertImage,
+  // imagePlugin,
   BlockTypeSelect,
   CodeToggle,
   Separator,
@@ -55,7 +55,7 @@ export default function InitializedMDXEditor({
         markdownShortcutPlugin(),
         linkPlugin(),
         linkDialogPlugin(),
-        imagePlugin(),
+        // imagePlugin(),
         codeBlockPlugin({ defaultCodeBlockLanguage: "js" }),
         codeMirrorPlugin({
           codeBlockLanguages: {
@@ -82,8 +82,8 @@ export default function InitializedMDXEditor({
                       <Separator />
                       <BlockTypeSelect />
                       <Separator />
-                      <CreateLink />
-                      <InsertImage />
+                      {/* <CreateLink /> */}
+                      {/* <InsertImage /> */}
                     </>
                   ),
                 },

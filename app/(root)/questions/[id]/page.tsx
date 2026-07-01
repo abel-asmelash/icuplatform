@@ -11,6 +11,7 @@ import { Preview } from "../../../../components/editor/Preview";
 import { getQuestion } from "@/lib/action/question.action";
  import { notFound } from "next/navigation";
 import AnswerForm from "@/components/forms/AnswerForm";
+import { getAnswers } from "@/lib/answer.action";
 
 const QuestionDetails = async ({ params }: RouteParams) => {
     
@@ -23,6 +24,13 @@ const QuestionDetails = async ({ params }: RouteParams) => {
  })
   
   if(!success || !question)  return notFound()
+    const {success: areAnswersLoaded, data:answersResult, error:answersError} = await getAnswers({
+  questionId: id, 
+  page:1,
+  pageSize:10,
+  filter:'latest'
+  })
+  console.log("ANSWERS", answersResult)
 
 const { author, createdAt, answers, views, tags, content, title} = question ;
 

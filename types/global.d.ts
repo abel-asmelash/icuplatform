@@ -36,6 +36,14 @@ declare global {
     createdAt: Date;
     updatedAt: Date;
   }
+  
+interface PaginatedSearchParams {
+  page?: number;
+  pageSize?: number;
+  query?: string;
+  filter?: string;
+  sort?: string;
+}
 
   interface GetTagQuestionsParams {
     tagId: string;
@@ -48,4 +56,11 @@ declare global {
   interface GetQuestionParams {
     questionId: string;
   }
+}
+interface Answer {
+  _id: string
+  author:Author
+  content:string
+  createdAt:Date
+
 }

@@ -1,43 +1,49 @@
-export interface SignInWithOAuthParams{
-    provider: string
-    providerAccountId: string
-    user:{
-        email:string,
-        name: string,
-        image:string
-        username:string
-
-    }
+import { PaginatedSearchParams } from "./actions";
+export interface SignInWithOAuthParams {
+  provider: string;
+  providerAccountId: string;
+  user: {
+    email: string;
+    name: string;
+    image: string;
+    username: string;
+  };
 }
 
-interface AuthCredentials {
-    name: string
-    username:string
-    email:string
-    password:string
+export interface AuthCredentials {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
 }
-interface createQuestionParams{
-    title: string
-    content: string
-    tags:string[]
+export interface createQuestionParams {
+  title: string;
+  content: string;
+  tags: string[];
 }
-interface RouteParams{
-    params: Promise<Record<string, string>>
-    searchParams:Promise<Record<string, string>>
+export interface RouteParams {
+  params: Promise<Record<string, string>>;
+  searchParams: Promise<Record<string, string>>;
 }
-export interface EditQuestionParams extends createQuestionParams{
-questionId: string
+export interface EditQuestionParams extends createQuestionParams {
+  questionId: string;
 }
- interface GetQuestionParams{
-    questionId: string
+export interface GetQuestionParams {
+  questionId: string;
 }
-interface GetQuestionParams extends Omit<PaginatedSearchParams, "filter">{
-    tagId: string
+export interface GetQuestionParams extends Omit<
+  PaginatedSearchParams,
+  "filter"
+> {
+  tagId: string;
 }
-interface IncrementViewsParams {
-    questionId: string
+export interface IncrementViewsParams {
+  questionId: string;
 }
-interface CreateAnswerParams{
-    questionId: string
-    content:string
+export interface CreateAnswerParams {
+  questionId: string;
+  content: string;
+}
+export interface GetAnswersParams extends PaginatedSearchParams {
+  questionId: string;
 }
