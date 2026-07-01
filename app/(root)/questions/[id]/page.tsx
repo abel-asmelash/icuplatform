@@ -12,6 +12,7 @@ import { getQuestion } from "@/lib/action/question.action";
  import { notFound } from "next/navigation";
 import AnswerForm from "@/components/forms/AnswerForm";
 import { getAnswers } from "@/lib/answer.action";
+import AllAnswers from "@/components/answers/AllAnswers";
 
 const QuestionDetails = async ({ params }: RouteParams) => {
     
@@ -100,8 +101,18 @@ const { author, createdAt, answers, views, tags, content, title} = question ;
           ))}
         </div>
       </div>
+
+      <section className="my-5">
+        <AllAnswers
+          data={answersResult?.answers}
+          success={areAnswersLoaded}
+          error={answersError}
+          totalAnswers={answersResult?.totalAnswers || 0}
+        />
+      </section>
+
       <section>
-        <AnswerForm questionId={question._id}/>
+        <AnswerForm questionId={question._id} />
       </section>
     </>
   );
