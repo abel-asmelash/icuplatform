@@ -141,11 +141,23 @@ export const IncrementViewsSchema = z.object({
 })
 
 export const AnswerSchema = z.object({
-  content: z.string().min(50,{message: "Answer has to have more than 50 charachters."})
-})
+  content: z
+    .string()
+    .min(50, { message: "Het antwoord moet meer dan 50 tekens bevatten." }),
+});
 export const AnswerServerSchema = AnswerSchema.extend({
   questionId:z.string().min(1, {message: "Question ID is required."})
 })
 export const GetAnswersSchema = PaginatedSearchParamsSchema.extend({
   questionId:z.string().min(1, {message:"Question ID is required."}),
 })
+
+export const AIAnswerSchema = z.object({
+  question: z
+    .string()
+    .min(5, { message: "Question ID is required." })
+    .max(130, { message: "Vragen mogen niet langer zijn dan 130 tekens." }),
+  content: z
+    .string()
+    .min(100, { message: "Antwoord mag niet langer zijn dan 100 tekens." }),
+}); 
