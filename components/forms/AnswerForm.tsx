@@ -71,9 +71,10 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
     
     const userAnswer = editorRef.current?.getMarkdown()?.trim();
     if(!userAnswer){
-       toast.error("Schrijf eerst je anwoord", {
-        description:"Je moet eerst zelf een antwoord proberen te shcrijven, daarna helpt de ai met formuleren"
-       })
+       toast.error("Formuleer eerst een antwoord", {
+         description:
+           "Typ eerst een eerste aanzet. De AI helpt je daarna om je antwoord verder te verfijnen.",
+       });
        return
     }
     setIsAISubmitting(true);
