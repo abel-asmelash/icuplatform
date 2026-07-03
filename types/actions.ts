@@ -41,7 +41,7 @@ export interface EditQuestionParams extends createQuestionParams {
 export interface GetQuestionParams {
   questionId: string;
 }
-// now added
+ 
 // add to types/actions.ts
 export interface Author {
   _id: string;

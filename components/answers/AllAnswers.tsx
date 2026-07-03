@@ -1,11 +1,16 @@
 import { EMPTY_ANSWERS } from "@/constants/states";
-import { ActionResponse } from "@/types/actions";
 import DataRenderer from "@/components/DataRenderer";
 import AnswerCard from "../card/AnswerCard";
 
-interface Props extends ActionResponse<Answer[]> {
+type Props = {
+  success: boolean;
+  error?: {
+    message: string;
+    details?: Record<string, string[]>;
+  };
+  data: Answer[] | null | undefined;
   totalAnswers: number;
-}
+};
 
 const AllAnswers = ({ data , success, error, totalAnswers }: Props) => {
   return (

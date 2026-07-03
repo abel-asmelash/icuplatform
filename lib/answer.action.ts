@@ -1,17 +1,16 @@
 "use server";
 
 import Answer, { IAnswer } from "@/database/answer.model";
-import { CreateAnswerParams,GetAnswersParams } from "@/types/action";
+import { CreateAnswerParams, GetAnswersParams } from "@/types/action";
 import { ActionResponse, ErrorResponse } from "@/types/actions";
 import action from "./handlers/action";
-import { AnswerServerSchema, GetAnswersSchema } from "./validations";
+import { AnswerServerSchema, GetAnswersSchema, ToggleHelpfulSchema} from "./validations";
 import handleError from "./handlers/error";
 import mongoose from "mongoose";
 import { Question } from "@/database";
 import { revalidatePath } from "next/cache";
 import ROUTES from "@/constants/routes";
- 
- 
+
 export async function createAnswer(
   params: CreateAnswerParams,
 ): Promise<ActionResponse<IAnswer>> {
@@ -62,8 +61,6 @@ export async function createAnswer(
     await session.endSession();
   }
 }
-
-
 
 export async function getAnswers(params: GetAnswersParams): Promise<
   ActionResponse<{
@@ -119,6 +116,56 @@ export async function getAnswers(params: GetAnswersParams): Promise<
         answers: JSON.parse(JSON.stringify(answers)),
         isNext,
         totalAnswers,
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+// togglehelpful file
+export async function toggleHelpful(params: {
+  answerId: string;
+}): Promise<ActionResponse<{ isHelpful: boolean; helpfulCount: number }>> {
+  const validation = await action({
+    params,
+    schema: ToggleHelpfulSchema,
+    authorize: true,
+  });
+
+  if (validation instanceof Error) {
+    return handleError(validation) as ErrorResponse;
+  }
+
+  const { answerId } = validation.params!;
+  const userId = validation.session?.user?.id;
+
+  if (!userId) {
+    return handleError(new Error("Unauthorized")) as ErrorResponse;
+  }
+
+  try {
+    const answer = await Answer.findById(answerId);
+    if (!answer) throw new Error("Answer not found");
+
+    const alreadyMarked = answer.helpfulBy.some(
+      (id: mongoose.Types.ObjectId) => id.toString() === userId,
+    );
+
+    if (alreadyMarked) {
+      answer.helpfulBy = answer.helpfulBy.filter(
+        (id:mongoose.Types.ObjectId) => id.toString() !== userId,
+      );
+    } else {
+      answer.helpfulBy.push(new mongoose.Types.ObjectId(userId));
+    }
+
+    await answer.save();
+
+    return {
+      success: true,
+      data: {
+        isHelpful: !alreadyMarked,
+        helpfulCount: answer.helpfulBy.length,
       },
     };
   } catch (error) {

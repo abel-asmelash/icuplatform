@@ -4,8 +4,12 @@ import Link from "next/link";
 import ROUTES from "@/constants/routes";
 import { getTimeStamp } from "@/lib/utils";
 import { Preview } from "../editor/Preview";
-
-const AnswerCard = ({ _id, author, content, createdAt }: Answer) => {
+import HelpfulButton from "./Helpfulbutton";
+import {auth} from "@/auth"
+const AnswerCard = async  ({ _id, author, content, createdAt, helpfulBy }: Answer) => {
+  const session = await auth()
+  const userId = session?.user?.id;
+  const isHelpful = userId ? helpfulBy.includes(userId) : false;
   return (
     <article className="light-border border-b py-10">
       <span id={JSON.stringify(_id)} className="hash-span">
@@ -30,7 +34,13 @@ const AnswerCard = ({ _id, author, content, createdAt }: Answer) => {
               </p>
             </Link>
           </div>
-          <div className="flex justify-end">Votes</div>
+          <div className="flex justify-end">
+            <HelpfulButton
+            answerId={_id}
+            initialIsHelpful={isHelpful}
+            initialCount={helpfulBy.length}
+            />
+          </div>
         </div>
 
         <Preview content={content} />

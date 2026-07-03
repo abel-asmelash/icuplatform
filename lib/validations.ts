@@ -1,4 +1,3 @@
- 
 import { Question } from "@/database";
 import { z } from "zod";
 
@@ -121,24 +120,24 @@ export const SignInWithOAuthSchema = z.object({
 });
 
 export const EditQuestionSchema = AskQuestionSchema.extend({
-  questionId: z.string().min(1, {message: "Question ID is required."})
-})
+  questionId: z.string().min(1, { message: "Question ID is required." }),
+});
 export const GetQuestionSchema = z.object({
-  questionId: z.string().min(1, {message: "Question ID is required."})
-})
+  questionId: z.string().min(1, { message: "Question ID is required." }),
+});
 export const PaginatedSearchParamsSchema = z.object({
   page: z.number().int().positive().default(1),
   pageSize: z.number().int().positive().default(10),
   query: z.string().optional(),
- filter: z.string().optional(),
- sort: z.string().optional()
-})
+  filter: z.string().optional(),
+  sort: z.string().optional(),
+});
 export const GetTagQuestionsSchema = PaginatedSearchParamsSchema.extend({
-  tagId: z.string().min(1, {message: "Tag ID required"})
-})
+  tagId: z.string().min(1, { message: "Tag ID required" }),
+});
 export const IncrementViewsSchema = z.object({
-  questionId: z. string().min(1, {message: "Question ID is required"})
-})
+  questionId: z.string().min(1, { message: "Question ID is required" }),
+});
 
 export const AnswerSchema = z.object({
   content: z
@@ -146,11 +145,11 @@ export const AnswerSchema = z.object({
     .min(50, { message: "Het antwoord moet meer dan 50 tekens bevatten." }),
 });
 export const AnswerServerSchema = AnswerSchema.extend({
-  questionId:z.string().min(1, {message: "Question ID is required."})
-})
+  questionId: z.string().min(1, { message: "Question ID is required." }),
+});
 export const GetAnswersSchema = PaginatedSearchParamsSchema.extend({
-  questionId:z.string().min(1, {message:"Question ID is required."}),
-})
+  questionId: z.string().min(1, { message: "Question ID is required." }),
+});
 
 export const AIAnswerSchema = z.object({
   question: z
@@ -160,5 +159,9 @@ export const AIAnswerSchema = z.object({
   content: z
     .string()
     .min(20, { message: "Antwoord mag niet langer zijn dan 100 tekens." }),
-    userAnswer:z.string().optional()
-}); 
+  userAnswer: z.string().optional(),
+});
+export const ToggleHelpfulSchema = z.object({
+  answerId: z.string().min(1, { message: "Answer ID is required." }),
+});
+ 
