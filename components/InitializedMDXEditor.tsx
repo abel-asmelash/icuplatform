@@ -9,7 +9,7 @@ import {
   markdownShortcutPlugin,
   MDXEditor,
   type MDXEditorMethods,
-  // type MDXEditorProps,
+  
   toolbarPlugin,
   ConditionalContents,
   UndoRedo,
@@ -17,17 +17,14 @@ import {
   ChangeCodeMirrorLanguage,
   codeBlockPlugin,
   codeMirrorPlugin,
-  // CreateLink,
   linkPlugin,
   linkDialogPlugin,
   ListsToggle,
-  // InsertImage,
-  // imagePlugin,
   BlockTypeSelect,
   CodeToggle,
   Separator,
 } from "@mdxeditor/editor";
-// import "@mdxeditor/editor/style.css";
+ 
 
 interface Props  {
   value: string;
@@ -82,8 +79,7 @@ export default function InitializedMDXEditor({
                       <Separator />
                       <BlockTypeSelect />
                       <Separator />
-                      {/* <CreateLink /> */}
-                      {/* <InsertImage /> */}
+                       
                     </>
                   ),
                 },

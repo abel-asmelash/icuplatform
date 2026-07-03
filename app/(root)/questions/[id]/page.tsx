@@ -112,7 +112,7 @@ const { author, createdAt, answers, views, tags, content, title} = question ;
       </section>
 
       <section>
-        <AnswerForm questionId={question._id} />
+        <AnswerForm questionId={question._id} questionTitle={question.title} questionContent={question.content} />
       </section>
     </>
   );

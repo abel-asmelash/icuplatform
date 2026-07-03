@@ -7,7 +7,7 @@ interface Props extends ActionResponse<Answer[]> {
   totalAnswers: number;
 }
 
-const AllAnswers = ({ data, success, error, totalAnswers }: Props) => {
+const AllAnswers = ({ data , success, error, totalAnswers }: Props) => {
   return (
     <div className="mt-11">
       <div className="flex items-center justify-between">

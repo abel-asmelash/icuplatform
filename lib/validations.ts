@@ -156,8 +156,9 @@ export const AIAnswerSchema = z.object({
   question: z
     .string()
     .min(5, { message: "Question ID is required." })
-    .max(130, { message: "Vragen mogen niet langer zijn dan 130 tekens." }),
+    .max(300, { message: "Vragen mogen niet langer zijn dan 130 tekens." }),
   content: z
     .string()
-    .min(100, { message: "Antwoord mag niet langer zijn dan 100 tekens." }),
+    .min(20, { message: "Antwoord mag niet langer zijn dan 100 tekens." }),
+    userAnswer:z.string().optional()
 }); 

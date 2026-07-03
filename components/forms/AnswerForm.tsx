@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import z from "zod";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { Bot } from "lucide-react";
@@ -17,10 +17,21 @@ import { AnswerSchema } from "@/lib/validations";
 import Editor from "@/components/editor";
 import { createAnswer } from "@/lib/answer.action";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import type { MDXEditorMethods } from "@mdxeditor/editor";
+ import { api } from "@/lib/api";  
 
-const AnswerForm = ({ questionId }: { questionId: string }) => {
+interface Props {
+  questionId: string;
+  questionTitle: string;
+  questionContent: string;
+}
+
+const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
   const [isAnswering, startAnsweringTransition] = useTransition();
   const [isAISubmitting, setIsAISubmitting] = useState(false);
+  const session = useSession();
+  const editorRef = useRef<MDXEditorMethods>(null);
 
   const form = useForm<z.infer<typeof AnswerSchema>>({
     resolver: zodResolver(AnswerSchema),
@@ -38,6 +49,10 @@ const AnswerForm = ({ questionId }: { questionId: string }) => {
         toast.success("Success", {
           description: "Your answer has been posted succesfully",
         });
+    
+        if (editorRef.current) {
+          editorRef.current.setMarkdown("");
+        }
       } else {
         toast.error("Error", {
           description: result.error?.message,
@@ -47,9 +62,49 @@ const AnswerForm = ({ questionId }: { questionId: string }) => {
   };
 
   const handleGenerateAIAnswer = async () => {
+    
+    if (session.status !== "authenticated") {
+      return toast.error("Gelieve eerst in te loggen", {
+        description: "U moet ingelogd zijn om deze functie te gebruiken.",
+      });
+    }
+    
+    const userAnswer = editorRef.current?.getMarkdown()?.trim();
+    if(!userAnswer){
+       toast.error("Schrijf eerst je anwoord", {
+        description:"Je moet eerst zelf een antwoord proberen te shcrijven, daarna helpt de ai met formuleren"
+       })
+       return
+    }
     setIsAISubmitting(true);
     try {
-      // call your AI generation server action here
+      const result = await api.ai.getAnswer(questionTitle, questionContent, userAnswer);
+      if (!result.success) {
+        return toast.error("Error", {
+          description: result.error?.message,
+        });
+      }
+
+      const formattedAnswer = result.data
+        .replace(/<br>/g, "")
+        .toString()
+        .trim();
+      if (editorRef.current) {
+        editorRef.current.setMarkdown(formattedAnswer);
+        form.setValue("content", formattedAnswer);
+        form.trigger("content");
+      }
+
+      toast.success("Success", {
+        description: "AI generated answer has been generated",
+      });
+    } catch (error) {
+      toast.error("Error", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "There was a problem with your request",
+      });
     } finally {
       setIsAISubmitting(false);
     }
@@ -82,6 +137,7 @@ const AnswerForm = ({ questionId }: { questionId: string }) => {
       </div>
       <Form {...form}>
         <form
+          // eslint-disable-next-line react-hooks/refs -- false positive, handleSubmit only reads editorRef inside the event callback, not during render
           onSubmit={form.handleSubmit(handleSubmit)}
           className="mt-6 flex w-full flex-col gap-10"
         >
@@ -92,6 +148,7 @@ const AnswerForm = ({ questionId }: { questionId: string }) => {
               <FormItem className="flex w-full flex-col gap-3">
                 <FormControl className="mt-3.5">
                   <Editor
+                    ref={editorRef}
                     value={field.value ?? ""}
                     fieldChange={field.onChange}
                   />
