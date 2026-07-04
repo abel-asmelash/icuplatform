@@ -15,7 +15,7 @@ const LeftSideBar = async () => {
   const userId = session?.user?.id;
 
   return (
-    <section className="custom-scrollbar background-light900_dark200 light-border sticky left-0 top-0 h-screen w-fit flex flex-col justify-between overflow-y-auto border-r p-6 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-[266px]">
+    <section className="custom-scrollbar background-light900_dark200 light-border sticky left-0 top-0 h-screen w-fit flex flex-col justify-between overflow-y-auto border-r p-6 shadow-light-300 dark:shadow-none max-sm:hidden `lg:w-66.5`">
       <div className="flex flex-1 flex-col gap-6">
         <NavLinks userId={userId} />
       </div>
@@ -30,7 +30,7 @@ const LeftSideBar = async () => {
           >
             <Button
               type="submit"
-              className="base-medium w-fit !bg-transparent px-4 py-3"
+              className="base-medium w-fit `bg-transparent!` px-4 py-3"
             >
               <LogOut className="size-5 text-black dark:text-white" />
               <span className="max-lg:hidden text-white ">
@@ -41,7 +41,7 @@ const LeftSideBar = async () => {
         ) : (
           <>
             <Button
-              className="small-medium btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 shadow-none"
+              className="small-medium btn-secondary `min-h-10.25` w-full rounded-lg px-4 py-3 shadow-none"
               asChild
             >
               <Link href={ROUTES.SIGN_IN}>
@@ -58,7 +58,7 @@ const LeftSideBar = async () => {
               </Link>
             </Button>
             <Button
-              className="small-medium light-border-2 btn-tertiary text-dark400_light900 min-h-[41px] w-full rounded-lg border px-4 py-3 shadow-none"
+              className="small-medium light-border-2 btn-tertiary text-dark400_light900 `min-h-10.25` w-full rounded-lg border px-4 py-3 shadow-none"
               asChild
             >
               <Link href={ROUTES.SIGN_UP}>

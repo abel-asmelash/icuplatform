@@ -66,7 +66,7 @@ const MobileNavigation = async () => {
                 >
                   <Button
                     type="submit"
-                    className="base-medium w-fit !bg-transparent px-4 py-3"
+                    className="base-medium w-fit `bg-transparent!` px-4 py-3"
                   >
                     <LogOut className="size-5 text-black dark:text-white" />
                     <span className=" text-dark300_light900">
@@ -78,7 +78,7 @@ const MobileNavigation = async () => {
             ) : null}
             <SheetClose asChild>
               <Link href={ROUTES.SIGN_IN}>
-                <Button className="small-medium btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 shadow-none">
+                <Button className="small-medium btn-secondary `min-h-10.25` w-full rounded-lg px-4 py-3 shadow-none">
                   <span className="primary-text-gradient">Log In</span>
                 </Button>
               </Link>
