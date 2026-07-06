@@ -24,7 +24,7 @@ interface Props {
 }
 
 const QuestionCard = ({ question, currentUserId }: Props) => {
-  const { _id, title, tags, author, upvotes, views, answers, createdAt, helpfulBy } =
+  const { _id, title, tags, author, views, answers, createdAt, helpfulBy } =
     question;
    const isHelpful =
      !!currentUserId && (helpfulBy ?? []).includes(currentUserId);
@@ -75,7 +75,7 @@ const QuestionCard = ({ question, currentUserId }: Props) => {
               initialIsHelpful={isHelpful}
               initialCount={helpfulBy?.length ?? 0}
             />
-             
+
             {/* <span className="small-medium text-dark400_light700">
               {upvotes} Votes
             </span> */}
@@ -86,7 +86,7 @@ const QuestionCard = ({ question, currentUserId }: Props) => {
               className="text-primary-500 w-4 h-4"
             />
             <span className="small-medium text-dark400_light700">
-              {answers} Answers
+              {answers} Antwoorden
             </span>
           </div>
           <div className="flex items-center gap-1.5">
@@ -95,7 +95,7 @@ const QuestionCard = ({ question, currentUserId }: Props) => {
               className="text-primary-500 w-4 h-4"
             />
             <span className="small-medium text-dark400_light700">
-              {views} Views
+              {views} Weergaven
             </span>
           </div>
         </div>
