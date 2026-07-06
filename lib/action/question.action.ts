@@ -16,6 +16,7 @@ import {
   GetQuestionSchema,
   IncrementViewsSchema,
   PaginatedSearchParamsSchema,
+  ToggleQuestionHelpfulSchema
 } from "../validations";
 import handleError from "../handlers/error";
 import { IncrementViewsParams } from "@/types/action";
@@ -23,7 +24,6 @@ import Question, { IQuestionDoc } from "@/database/question.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
 import TagQuestion from "@/database/tag-question.model";
 import mongoose, { type FilterQuery } from "mongoose";
- 
 
 export async function createQuestion(
   params: createQuestionParams,
@@ -319,15 +319,66 @@ export async function incrementViews(
   const { questionId } = validationResult.params!;
 
   try {
-    const question = await Question.findById(questionId);  
+    const question = await Question.findById(questionId);
     if (!question) throw new Error("Question not found");
 
-    question.views += 1;  
-    await question.save();  
-    
+    question.views += 1;
+    await question.save();
+
     return {
       success: true,
       data: { views: question.views },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+// togglequestionHelpful
+export async function toggleQuestionHelpful(params: {
+  questionId: string;
+}): Promise<ActionResponse<{ isHelpful: boolean; helpfulCount: number }>> {
+  const validation = await action({
+    params,
+    schema: ToggleQuestionHelpfulSchema,
+    authorize: true,
+  });
+
+  if (validation instanceof Error) {
+    return handleError(validation) as ErrorResponse;
+  }
+
+  const { questionId } = validation.params!;
+  const userId = validation.session?.user?.id;
+
+  if (!userId) {
+    return handleError(new Error("Unauthorized")) as ErrorResponse;
+  }
+
+  try {
+    const question = await Question.findById(questionId);
+    if (!question) throw new Error("Question not found");
+
+    const alreadyMarked = question.helpfulBy.some(
+      (id: mongoose.Types.ObjectId) => id.toString() === userId,
+    );
+
+    if (alreadyMarked) {
+      question.helpfulBy = question.helpfulBy.filter(
+        (id: mongoose.Types.ObjectId) => id.toString() !== userId,
+      );
+    } else {
+      question.helpfulBy.push(new mongoose.Types.ObjectId(userId));
+    }
+
+    await question.save();
+
+    return {
+      success: true,
+      data: {
+        isHelpful: !alreadyMarked,
+        helpfulCount: question.helpfulBy.length,
+      },
     };
   } catch (error) {
     return handleError(error) as ErrorResponse;

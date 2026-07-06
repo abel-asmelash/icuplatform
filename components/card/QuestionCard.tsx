@@ -7,6 +7,7 @@ import {
   faEye,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import HelpfulQuestionButton from '@/components/card/HelpfulQuestionButton'
 interface Props {
   question: {
     _id: string;
@@ -17,13 +18,16 @@ interface Props {
     views: number;
     answers: number;
     createdAt: Date;
+    helpfulBy:string[]
   };
+  currentUserId: string
 }
 
-const QuestionCard = ({ question }: Props) => {
-  const { _id, title, tags, author, upvotes, views, answers, createdAt } =
+const QuestionCard = ({ question, currentUserId }: Props) => {
+  const { _id, title, tags, author, upvotes, views, answers, createdAt, helpfulBy } =
     question;
-
+   const isHelpful =
+     !!currentUserId && (helpfulBy ?? []).includes(currentUserId);
   return (
     <div className="card-wrapper rounded-[10px] p-9 sm:px-11">
       <div className="flex  flex-col-reverse items-start justify-between gap-5 sm:flex-row">
@@ -66,13 +70,15 @@ const QuestionCard = ({ question }: Props) => {
 
         <div className="flex gap-4">
           <div className="flex items-center gap-1.5">
-            <FontAwesomeIcon
-              icon={faThumbsUp}
-              className="text-primary-500 w-4 h-4"
+            <HelpfulQuestionButton
+              questionId={_id}
+              initialIsHelpful={isHelpful}
+              initialCount={helpfulBy?.length ?? 0}
             />
-            <span className="small-medium text-dark400_light700">
+             
+            {/* <span className="small-medium text-dark400_light700">
               {upvotes} Votes
-            </span>
+            </span> */}
           </div>
           <div className="flex items-center gap-1.5">
             <FontAwesomeIcon

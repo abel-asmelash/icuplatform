@@ -1,16 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { toggleHelpful } from "@/lib/answer.action";
+import { toggleQuestionHelpful } from "@/lib/action/question.action";
 import { toast } from "sonner";
-
+ 
 interface Props {
-  answerId: string;
+  questionId: string;
   initialIsHelpful: boolean;
   initialCount: number;
 }
 
-const HelpfulButton = ({ answerId, initialIsHelpful, initialCount }: Props) => {
+const HelpfulButton = ({ questionId, initialIsHelpful, initialCount }: Props) => {
   const [isHelpful, setIsHelpful] = useState(initialIsHelpful);
   const [count, setCount] = useState(initialCount);
   const [isPending, setIsPending] = useState(false);
@@ -24,7 +24,7 @@ const HelpfulButton = ({ answerId, initialIsHelpful, initialCount }: Props) => {
     setIsHelpful(!isHelpful);
     setCount(isHelpful ? count - 1 : count +1);
 
-    const result = await toggleHelpful({ answerId });
+    const result = await toggleQuestionHelpful({ questionId });
 
     if (!result.success) {
  

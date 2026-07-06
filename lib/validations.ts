@@ -164,4 +164,6 @@ export const AIAnswerSchema = z.object({
 export const ToggleHelpfulSchema = z.object({
   answerId: z.string().min(1, { message: "Answer ID is required." }),
 });
- 
+export const ToggleQuestionHelpfulSchema = z.object({
+  questionId: z.string().min(1, "Question ID is required"),
+});
