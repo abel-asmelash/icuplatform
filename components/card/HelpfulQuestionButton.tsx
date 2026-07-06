@@ -46,7 +46,8 @@ const HelpfulButton = ({ questionId, initialIsHelpful, initialCount }: Props) =>
     >
       <span>{isHelpful ? "👍" : "👍"}</span>
       <span className="text-light400_light500">
-        {count} {count === 1 ? "person found" : "people found"} this helpful
+        {count} {count === 1 ? "lid vond" : "leden vonden"} dit
+        interessant
       </span>
     </button>
   );
