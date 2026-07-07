@@ -23,7 +23,7 @@ import { IncrementViewsParams } from "@/types/action";
 import Question, { IQuestionDoc } from "@/database/question.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
 import TagQuestion from "@/database/tag-question.model";
-import mongoose, { type FilterQuery } from "mongoose";
+ import mongoose, { type FilterQuery } from "mongoose";
 
 export async function createQuestion(
   params: createQuestionParams,

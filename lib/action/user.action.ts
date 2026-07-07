@@ -5,7 +5,7 @@ import action from "../handlers/action";
 import { PaginatedSearchParamsSchema } from "../validations";
 import handleError from "../handlers/error";
 import User from "@/database/user.model"
-import type {FilterQuery} from "mongoose"
+ 
 
 export async function getUsers(params: PaginatedSearchParams):Promise<ActionResponse<{
     users:User[], isNext: boolean
@@ -17,15 +17,31 @@ export async function getUsers(params: PaginatedSearchParams):Promise<ActionResp
     if (validationResult instanceof Error){
         return handleError (validationResult) as ErrorResponse
     }
-    const {page = 1, pageSize = 10, query, filter}= params;
+    const {page = 1, pageSize = 10, query,  filter}= params;
     const skip = (Number(page)-1) * pageSize;
     const limit = pageSize;
-    const filterQuery: FilterQuery<typeof User> = {}
-    if (query){
-     filterQuery.$or = [
-        {name:{$regx: query, $options:"i"}},
-        {email:{$regx: query, $options:"i"}},
-     ]
+
+    const filterQuery = {} as {
+      $or?: {
+        name?: { $regex: string; $options: string };
+        email?: { $regex: string; $options: string };
+      }[];
+    };
+    if (query) {
+      filterQuery.$or = [
+        {
+          name: {
+            $regex: query,
+            $options: "i",
+          },
+        },
+        {
+          email: {
+            $regex: query,
+            $options: "i",
+          },
+        },
+      ];
     }
     let sortCriteria = {}
     switch(filter){
