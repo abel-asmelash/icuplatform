@@ -1,3 +1,5 @@
+import { Question } from "@/database";
+
  const ROUTES = {
    HOME: "/",
    SIGN_IN: "/sign-in",
@@ -10,6 +12,7 @@
    QUESTION: (id: string) => `/questions/${id}`,
    TAG: (id: string) => `/tags/${id}`,
    SIGN_IN_WITH_OAUTH: `signin-with-oauth`,
+    
  };
 export default ROUTES;
 

@@ -64,3 +64,6 @@ export interface PopulatedQuestion {
   createdAt: string;
   updatedAt: string;
 }
+export interface CollectionBaseParams {
+  questionId: string
+}
