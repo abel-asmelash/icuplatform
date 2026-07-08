@@ -15,6 +15,8 @@ import { getAnswers } from "@/lib/answer.action";
 import AllAnswers from "@/components/answers/AllAnswers";
 import { Suspense } from "react";
 import SaveQuestion from "@/components/questions/SaveQuestion";
+import { hasSaveQuestion } from "@/lib/action/collection.action";
+
 const QuestionDetails = async ({ params }: RouteParams) => {
     
   const { id } = await params;
@@ -33,7 +35,10 @@ const QuestionDetails = async ({ params }: RouteParams) => {
   filter:'latest'
   })
   console.log("ANSWERS", answersResult)
-
+ 
+const hasSavedQuestionPromise = hasSaveQuestion({
+  questionId:question._id,
+})
 const { author, createdAt, answers, views, tags, content, title} = question ;
 
   return (
@@ -52,10 +57,10 @@ const { author, createdAt, answers, views, tags, content, title} = question ;
               </p>
             </Link>
           </div>
-          <div className="flex justify-end">
-            <p>Vote</p>
+          <div className="flex item-center justify-end gap-4">
+            
             <Suspense fallback={<div>Loading...</div>}>
-              <SaveQuestion questionId={question._id} />
+              <SaveQuestion questionId={question._id} hasSavedQuestionPromise={hasSavedQuestionPromise}/>
             </Suspense>
           </div>
         </div>

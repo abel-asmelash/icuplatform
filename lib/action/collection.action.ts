@@ -11,7 +11,7 @@ import handleError from "../handlers/error";
 import { CollectionBaseParams } from "@/types/actions";
 import { CollectionBaseSchema } from "../validations";
 export async function toggleSaveQuestion(
-  params: CollectionBaseParams
+  params: CollectionBaseParams,
 ): Promise<ActionResponse<{ saved: boolean }>> {
   const validationResult = await action({
     params,
@@ -54,6 +54,38 @@ export async function toggleSaveQuestion(
     return {
       success: true,
       data: { saved: true },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+//hasSavedQuestion
+export async function hasSaveQuestion(
+  params: CollectionBaseParams,
+): Promise<ActionResponse<{ saved: boolean }>> {
+  const validationResult = await action({
+    params,
+    schema: CollectionBaseSchema,
+    authorize: true,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { questionId } = validationResult.params!;
+  const userId = validationResult.session?.user?.id;
+
+  try {
+    const collection = await Collection.findOne({
+      question: questionId,
+      author: userId,
+    });
+
+    return {
+      success: true,
+      data: { saved: !!collection },
     };
   } catch (error) {
     return handleError(error) as ErrorResponse;
