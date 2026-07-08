@@ -13,7 +13,8 @@ import { getQuestion } from "@/lib/action/question.action";
 import AnswerForm from "@/components/forms/AnswerForm";
 import { getAnswers } from "@/lib/answer.action";
 import AllAnswers from "@/components/answers/AllAnswers";
-
+import { Suspense } from "react";
+import SaveQuestion from "@/components/questions/SaveQuestion";
 const QuestionDetails = async ({ params }: RouteParams) => {
     
   const { id } = await params;
@@ -53,6 +54,9 @@ const { author, createdAt, answers, views, tags, content, title} = question ;
           </div>
           <div className="flex justify-end">
             <p>Vote</p>
+            <Suspense fallback={<div>Loading...</div>}>
+              <SaveQuestion questionId={question._id} />
+            </Suspense>
           </div>
         </div>
 
@@ -112,7 +116,11 @@ const { author, createdAt, answers, views, tags, content, title} = question ;
       </section>
 
       <section>
-        <AnswerForm questionId={question._id} questionTitle={question.title} questionContent={question.content} />
+        <AnswerForm
+          questionId={question._id}
+          questionTitle={question.title}
+          questionContent={question.content}
+        />
       </section>
     </>
   );
