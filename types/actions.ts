@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
 
 export type ActionResponse<T = null> =
-  | { success: true; data: T; status?: number }
+  // | { success: true; data: T; status?: number }
   | {
-      success: false;
-      error: {
+      success: boolean;
+      data?: T
+      error?: {
         message: string;
         details?: Record<string, string[]>;
       };
       status?: number;
     };
 
-export type SuccessResponse<T = null> = ActionResponse<T> & { success: true };
+export type SuccessResponse<T = null> = ActionResponse<T> & { success: true  };
 export type ErrorResponse = ActionResponse<undefined> & { success: false };
 export type APIErrorResponse = NextResponse<ErrorResponse>;
 export type APIResponse<T = null> = NextResponse<
@@ -20,6 +21,7 @@ export type APIResponse<T = null> = NextResponse<
 
 export type RouteParams = {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 export interface PaginatedSearchParams {
