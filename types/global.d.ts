@@ -73,3 +73,8 @@ interface User{
   image?:string
   bio?:string
 }
+interface Collection {
+  _id:string
+  author:string | Author 
+  question: Question
+}
