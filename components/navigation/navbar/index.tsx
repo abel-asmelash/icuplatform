@@ -14,9 +14,9 @@ const Navbar = async() => {
           <Image
             src="/assets/icu-logo.png"
             alt="ICU icon"
-            width={28}
-            height={28}
-            className="h-7 w-auto"
+            width={50}
+            height={50}
+            className="h-8 w-auto rounded-2xl shadow-2xl"
           />
         </div>
 
@@ -29,15 +29,16 @@ const Navbar = async() => {
           </span>
         </div>
       </Link>
-            
+
       <p>Global Search</p>
 
       <div className="flex items-center gap-5">
         <Theme />
         {session?.user?.id && (
-          <UserAvatar id={session.user.id}
-          name={session.user.name!}
-          imageUrl={session.user?.image}
+          <UserAvatar
+            id={session.user.id}
+            name={session.user.name!}
+            imageUrl={session.user?.image}
           />
         )}
         <MobileNavigation />
