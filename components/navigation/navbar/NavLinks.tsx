@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
  
 
-const NavLinks =  ({ isMobileNav = false, userId }: { isMobileNav?: boolean, userId?: string}) => {
+const NavLinks =  ({ isMobileNav = false }: { isMobileNav?: boolean, userId?: string}) => {
   const pathname = usePathname();
 
   return (

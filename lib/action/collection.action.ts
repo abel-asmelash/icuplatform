@@ -5,7 +5,7 @@ import { PipelineStage } from "mongoose";
 import { Collection, Question } from "@/database";
 import ROUTES from "@/constants/routes";
 import { ActionResponse, ErrorResponse } from "@/types/actions";
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
 import { CollectionBaseParams, PaginatedSearchParams } from "@/types/actions";
@@ -13,7 +13,7 @@ import {
   CollectionBaseSchema,
   PaginatedSearchParamsSchema,
 } from "../validations";
- 
+
 export async function toggleSaveQuestion(
   params: CollectionBaseParams,
 ): Promise<ActionResponse<{ saved: boolean }>> {

@@ -20,7 +20,7 @@ interface Props {
     createdAt: Date;
     helpfulBy:string[]
   };
-  currentUserId: string
+  currentUserId?: string
 }
 
 const QuestionCard = ({ question, currentUserId }: Props) => {
