@@ -17,10 +17,10 @@ import { Suspense } from "react";
 import SaveQuestion from "@/components/questions/SaveQuestion";
 import { hasSaveQuestion } from "@/lib/action/collection.action";
 
-const QuestionDetails = async ({ params }: RouteParams) => {
+const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
     
   const { id } = await params;
-
+   const { page } = await searchParams;
   const  {success, data: question} = await getQuestion({questionId: id})
  
  after(async () =>{
@@ -31,7 +31,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
     const {success: areAnswersLoaded, data:answersResult, error:answersError} = await getAnswers({
   questionId: id, 
   page:1,
-  pageSize:10,
+  pageSize:1,
   filter:'latest'
   })
   console.log("ANSWERS", answersResult)
@@ -113,6 +113,9 @@ const { author, createdAt, answers, views, tags, content, title} = question ;
 
       <section className="my-5">
         <AllAnswers
+          page={Number(page) || 1}
+          isNext={answersResult?.isNext || false
+          }
           data={answersResult?.answers}
           success={areAnswersLoaded}
           error={answersError}

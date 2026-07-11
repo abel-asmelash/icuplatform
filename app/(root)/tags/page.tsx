@@ -1,8 +1,9 @@
-import DataRenderer from "@/components/DataRenderer";
+ 
 import LocalSearch from "@/components/search/LocalSearch";
 import TagPageCard from "@/components/card/TagPageCard";    
 import { getTags } from "@/lib/action/tag.action";
-
+import Pagination from "@/components/Pagination";
+ 
 interface SearchParams {
   searchParams: Promise<{
     page?: string;
@@ -26,7 +27,7 @@ const Tags = async ({ searchParams }: SearchParams) => {
     return <div>Error: {JSON.stringify(error)}</div>;
   }
 
-  const { tags } = data;
+  const { tags,isNext } = data || {}
 
   return (
     <>
@@ -42,9 +43,9 @@ const Tags = async ({ searchParams }: SearchParams) => {
         />
       </section>
 
-      <div className="mt-10 flex w-full flex-wrap gap-4">
+      <div className="mt-10 flex w-full flex-wrap gap-4 mb-10">
         {tags.length > 0 ? (
-          tags.map((tag) => (
+          tags.map((tag:Tag) => (
             <TagPageCard
               key={tag._id.toString()}
               _id={tag._id.toString()}
@@ -58,6 +59,7 @@ const Tags = async ({ searchParams }: SearchParams) => {
           </p>
         )}
       </div>
+      <Pagination page={page} isNext={isNext || false} /> 
     </>
   );
 };

@@ -1,8 +1,10 @@
 import { EMPTY_ANSWERS } from "@/constants/states";
 import DataRenderer from "@/components/DataRenderer";
 import AnswerCard from "../card/AnswerCard";
-
+import Pagination from "../Pagination";
 type Props = {
+  page:number
+  isNext:boolean
   success: boolean;
   error?: {
     message: string;
@@ -12,7 +14,7 @@ type Props = {
   totalAnswers: number;
 };
 
-const AllAnswers = ({ data , success, error, totalAnswers }: Props) => {
+const AllAnswers = ({ data , page, isNext, success, error, totalAnswers }: Props) => {
   return (
     <div className="mt-11">
       <div className="flex items-center justify-between">
@@ -31,6 +33,7 @@ const AllAnswers = ({ data , success, error, totalAnswers }: Props) => {
           answers.map((answer) => <AnswerCard key={answer._id} {...answer} />)
         }
       />
+      <Pagination page={page} isNext={isNext}/>
     </div>
   );
 };

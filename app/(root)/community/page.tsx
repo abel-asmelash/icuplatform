@@ -5,7 +5,7 @@ import DataRenderer from "@/components/DataRenderer";
 import ROUTES from "@/constants/routes";
 import { EMPTY_USERS } from "@/constants/states";
 import UserCard from "@/components/cards/UserCard";
-
+import Pagination from "@/components/Pagination";
 const CommunityPage = async ({ searchParams }: RouteParams) => {
   const { page, pageSize, query, filter } = await searchParams;
   const { success, data, error } = await getUsers({
@@ -15,7 +15,7 @@ const CommunityPage = async ({ searchParams }: RouteParams) => {
    filter: typeof filter === "string" ? filter : undefined,
   });
 
-  const { users } = data || {};
+  const { users, isNext } = data || {};
 
   return (
     <div>
@@ -48,6 +48,7 @@ const CommunityPage = async ({ searchParams }: RouteParams) => {
           </div>
         )}
       />
+      <Pagination page={Number(page) || 1} isNext={isNext || false}/>
     </div>
   );
 };

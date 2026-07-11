@@ -7,6 +7,7 @@ import QuestionCard from "@/components/card/QuestionCard";
 import DataRenderer from "@/components/DataRenderer";
 import { getQuestions } from "@/lib/action/question.action";
 import { EMPTY_QUESTION } from "@/constants/states";
+import Pagination from "@/components/Pagination";
 
 interface SearchParams {
   searchParams: Promise<{ [key: string]: string }>;
@@ -29,13 +30,13 @@ const Home = async ({ searchParams }: SearchParams) => {
 
   const { success, data, error } = await getQuestions({
     page: Number(page) || 1,
-    pageSize: Number(pageSize) || 10,
+    pageSize: Number(pageSize) || 2,
     query: query || "",
     filter: filter || "",
   });
 
  
-   const questions = (data?.question ?? []) as unknown as Question[];
+   const {question, isNext} = data || {};
 
   return (
     <>
@@ -61,16 +62,18 @@ const Home = async ({ searchParams }: SearchParams) => {
       <DataRenderer
         success={success}
         error={error}
-        data={questions}
+        data={question}
         empty={EMPTY_QUESTION}
         render={(questions) => (
           <div className="mt-10 flex w-full flex-col gap-6">
             {questions.map((question) => (
               <QuestionCard key={question._id} question={question} />
+
             ))}
           </div>
         )}
       />
+      <Pagination page={page} isNext={isNext || false}/>
     </>
   );
 };

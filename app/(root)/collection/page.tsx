@@ -5,6 +5,7 @@ import DataRenderer from "@/components/DataRenderer";
 import { EMPTY_QUESTION } from "@/constants/states";
 import { getSavedQuestions } from "@/lib/action/collection.action";
 import { auth } from "@/auth";
+import Pagination from "@/components/Pagination";
 interface SearchParams {
   searchParams: Promise<{ [key: string]: string }>;
 }
@@ -19,7 +20,7 @@ const Collection = async ({ searchParams }: SearchParams) => {
     filter: filter || "",
   });
 
-  const { collection } = data || {};
+  const { collection, isNext} = data || {};
 
   return (
     <>
@@ -54,6 +55,7 @@ const Collection = async ({ searchParams }: SearchParams) => {
           </div>
         )}
       />
+      <Pagination page={page} isNext={isNext || false}/>
     </>
   );
 };

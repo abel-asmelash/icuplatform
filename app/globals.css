@@ -50,7 +50,24 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 }
-
+ /* Login page animation  */
+@layer utilities {
+  @keyframes blob {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -40px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+  }
+  .animate-blob {
+    animation: blob 12s infinite ease-in-out;
+  }
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+}
+/* end animation */
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -209,6 +226,9 @@
   .text-primary-500 {
     @apply text-[#ff7000];
   }
+  .bg-primary-500 {
+  @apply bg-[#ff7000];
+}
   .text-dark400_light900 {
     @apply text-[#3d3d3d] dark:text-[#ffffff];
   }
