@@ -20,11 +20,11 @@ import {
 } from "../validations";
 import handleError from "../handlers/error";
 import { IncrementViewsParams } from "@/types/action";
-import Question, { IQuestionDoc } from "@/database/question.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
 import TagQuestion from "@/database/tag-question.model";
  import mongoose, { type FilterQuery } from "mongoose";
-
+import dbConnect from "../mongoose";
+import Question, { IQuestionDoc } from "@/database/question.model";
 export async function createQuestion(
   params: createQuestionParams,
 ): Promise<ActionResponse<IQuestionDoc>> {
@@ -382,5 +382,20 @@ export async function toggleQuestionHelpful(params: {
     };
   } catch (error) {
     return handleError(error) as ErrorResponse;
+  }
+}
+export async function getHotQuestions():Promise<ActionResponse<IQuestionDoc[]>>{
+  try {
+    await dbConnect()
+    const question = await Question.find()
+    .sort({views: -1, upvotes: -1})
+    .limit(5)
+    return {
+      success: true,
+      data:JSON.parse(JSON.stringify(question))
+
+    }
+  } catch (error) {
+    return handleError(error) as ErrorResponse
   }
 }
