@@ -170,3 +170,11 @@ export const ToggleQuestionHelpfulSchema = z.object({
 export const CollectionBaseSchema = z.object({
   questionId:z.string().min(1, {message: "Question ID is required."})
 })
+// Delete Question functionality
+export const DeleteQuestionSchema = z.object({
+  questionId: z.string().min(1, "Question ID is required"),
+})
+// Delete Answer functionality
+export const DeleteAnswerSchema = z.object({
+  answerId: z.string().min(1, "Answer ID is required"),
+})

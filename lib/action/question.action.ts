@@ -8,10 +8,11 @@ import type {
   PaginatedSearchParams,
   PopulatedQuestion,
 } from "@/types/actions";
-
+import {z} from "zod"
 import action from "../handlers/action";
 import {
   AskQuestionSchema,
+  DeleteQuestionSchema,
   EditQuestionSchema,
   GetQuestionSchema,
   IncrementViewsSchema,
@@ -25,6 +26,8 @@ import TagQuestion from "@/database/tag-question.model";
  import mongoose, { type FilterQuery } from "mongoose";
 import dbConnect from "../mongoose";
 import Question, { IQuestionDoc } from "@/database/question.model";
+import { NotFoundError, UnauthorizedError } from "../http-error";
+import { revalidatePath } from "next/cache";
 export async function createQuestion(
   params: createQuestionParams,
 ): Promise<ActionResponse<IQuestionDoc>> {
@@ -395,6 +398,38 @@ export async function getHotQuestions():Promise<ActionResponse<IQuestionDoc[]>>{
       data:JSON.parse(JSON.stringify(question))
 
     }
+  } catch (error) {
+    return handleError(error) as ErrorResponse
+  }
+}
+// Delete question functionality
+export async function deleteQuestion(
+  params: z.infer<typeof DeleteQuestionSchema>
+):Promise<ActionResponse>{
+  const validationResult = await action({
+    params, 
+    schema:DeleteQuestionSchema,
+    authorize: true
+  })
+  if(validationResult instanceof Error){
+    return handleError(validationResult) as ErrorResponse
+  }
+  const {questionId} = validationResult.params!
+  const session = validationResult.session;
+
+  try {
+    const question = await Question.findById(questionId)
+    if(!question) throw new NotFoundError("Question")
+      if(question.author.toString() !== session?.user?.id){
+        throw new UnauthorizedError(
+          "U bent niet gemachtigd om deze vraag te verwijderen",
+        );
+      }
+      await Question.findByIdAndDelete(questionId)
+      revalidatePath("/")
+      return {
+        success: true
+      }
   } catch (error) {
     return handleError(error) as ErrorResponse
   }
