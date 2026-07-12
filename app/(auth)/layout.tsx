@@ -31,7 +31,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
         <SocialAuthForm />
         <div className="mt-6 text-center">
           <span className="text-xs sm:text-sm text-gray-200 italic font-light tracking-wide leading-relaxed block max-w-md mx-auto">
-            “Komt een van u wijsheid tekort? Vraag God erom en hij die aan iedereen geeft, zonder voorbehouden en zonder verwijt, zal u wijsheid geven”
+            “Komt een van u wijsheid tekort? <br /> Vraag God erom en hij die aan iedereen geeft, zonder voorbehouden en zonder verwijt, zal u wijsheid geven”
           </span>
           <span className="text-[10px] sm:text-xs text-gray-300/70 font-light tracking-wider uppercase block mt-1">
             — James 1:5
