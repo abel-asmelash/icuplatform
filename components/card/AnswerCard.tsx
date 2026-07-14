@@ -44,7 +44,7 @@ const AnswerCard = async  ({ _id, author, content, createdAt, helpfulBy }: Answe
             initialIsHelpful={isHelpful}
             initialCount={helpfulBy.length}
             />
-            <DeleteConfirmDialog
+            {/* <DeleteConfirmDialog
             title="Answer"
             onDelete={async () => {
               "use server";
@@ -53,7 +53,7 @@ const AnswerCard = async  ({ _id, author, content, createdAt, helpfulBy }: Answe
               })
             }
             }
-            />
+            /> */}
           </div>
         </div>
 

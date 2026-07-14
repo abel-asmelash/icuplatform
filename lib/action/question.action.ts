@@ -8,7 +8,7 @@ import type {
   PaginatedSearchParams,
   PopulatedQuestion,
 } from "@/types/actions";
-import {z} from "zod"
+import { z } from "zod";
 import action from "../handlers/action";
 import {
   AskQuestionSchema,
@@ -17,17 +17,19 @@ import {
   GetQuestionSchema,
   IncrementViewsSchema,
   PaginatedSearchParamsSchema,
-  ToggleQuestionHelpfulSchema
+  ToggleQuestionHelpfulSchema,
 } from "../validations";
 import handleError from "../handlers/error";
 import { IncrementViewsParams } from "@/types/action";
 import Tag, { ITagDoc } from "@/database/tag.model";
 import TagQuestion from "@/database/tag-question.model";
- import mongoose, { type FilterQuery } from "mongoose";
+import mongoose, { type FilterQuery } from "mongoose";
 import dbConnect from "../mongoose";
 import Question, { IQuestionDoc } from "@/database/question.model";
 import { NotFoundError, UnauthorizedError } from "../http-error";
 import { revalidatePath } from "next/cache";
+import { Answer, Collection } from "@/database";
+ 
 export async function createQuestion(
   params: createQuestionParams,
 ): Promise<ActionResponse<IQuestionDoc>> {
@@ -387,50 +389,57 @@ export async function toggleQuestionHelpful(params: {
     return handleError(error) as ErrorResponse;
   }
 }
-export async function getHotQuestions():Promise<ActionResponse<IQuestionDoc[]>>{
+export async function getHotQuestions(): Promise<
+  ActionResponse<IQuestionDoc[]>
+> {
   try {
-    await dbConnect()
+    await dbConnect();
     const question = await Question.find()
-    .sort({views: -1, upvotes: -1})
-    .limit(5)
+      .sort({ views: -1, upvotes: -1 })
+      .limit(5);
     return {
       success: true,
-      data:JSON.parse(JSON.stringify(question))
-
-    }
+      data: JSON.parse(JSON.stringify(question)),
+    };
   } catch (error) {
-    return handleError(error) as ErrorResponse
+    return handleError(error) as ErrorResponse;
   }
 }
 // Delete question functionality
 export async function deleteQuestion(
-  params: z.infer<typeof DeleteQuestionSchema>
-):Promise<ActionResponse>{
+  params: z.infer<typeof DeleteQuestionSchema>,
+): Promise<ActionResponse> {
   const validationResult = await action({
-    params, 
-    schema:DeleteQuestionSchema,
-    authorize: true
-  })
-  if(validationResult instanceof Error){
-    return handleError(validationResult) as ErrorResponse
+    params,
+    schema: DeleteQuestionSchema,
+    authorize: true,
+  });
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
   }
-  const {questionId} = validationResult.params!
+  const { questionId } = validationResult.params!;
   const session = validationResult.session;
-
+  const mongoSession = await mongoose.startSession();
+  mongoSession.startTransaction();
   try {
-    const question = await Question.findById(questionId)
-    if(!question) throw new NotFoundError("Question")
-      if(question.author.toString() !== session?.user?.id){
-        throw new UnauthorizedError(
-          "U bent niet gemachtigd om deze vraag te verwijderen",
-        );
-      }
-      await Question.findByIdAndDelete(questionId)
-      revalidatePath("/")
-      return {
-        success: true
-      }
+    const question = await Question.findById(questionId).session(mongoSession);
+    if (!question) throw new NotFoundError("Question");
+    if (question.author.toString() !== session?.user?.id) {
+      throw new UnauthorizedError(
+        "U bent niet gemachtigd om deze vraag te verwijderen",
+      );
+    }
+    await Answer.deleteMany({ question: questionId }).session(mongoSession);
+    await Collection.deleteMany({ question: questionId }).session(mongoSession);
+    await Question.findByIdAndDelete(questionId).session(mongoSession);
+    await mongoSession.commitTransaction();
+    revalidatePath("/");
+    return {
+      success: true,
+    };
   } catch (error) {
-    return handleError(error) as ErrorResponse
+    return handleError(error) as ErrorResponse;
+  } finally {
+    mongoSession.endSession();
   }
 }
