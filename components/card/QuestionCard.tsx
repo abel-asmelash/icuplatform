@@ -71,7 +71,7 @@ const QuestionCard = ({ question, currentUserId }: Props) => {
           </span>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           <div className="flex items-center gap-1.5">
             <HelpfulQuestionButton
               questionId={_id}
@@ -97,7 +97,7 @@ const QuestionCard = ({ question, currentUserId }: Props) => {
               {views} Weergaven
             </span>
           </div>
-          <div className="">
+          <div className="flex items-center ml-0 sm:ml-2 pl-0 sm:pl-3 border-l-0 `sm:border` border-light-700 dark:border-dark-400">
             <QuestionActions questionId={_id} />
           </div>
         </div>

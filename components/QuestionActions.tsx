@@ -1,15 +1,24 @@
 "use client";
+
 import { useState } from "react";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTrigger,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import DeleteConfirmDialog from "@/components/DeleteConfirmDialog";
 import { deleteQuestion } from "@/lib/action/question.action";
-import { useRouter } from "next/navigation";
+ 
 
 interface Props {
   questionId: string;
@@ -17,44 +26,81 @@ interface Props {
 
 const QuestionActions = ({ questionId }: Props) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const router = useRouter();
+   const isDesktop = useMediaQuery("(min-width: 640px)");
+
+  const triggerButton = (
+    <button className="flex items-center justify-center rounded-full p-2 text-dark400_light700 hover:bg-light-800 hover:text-dark-300 dark:hover:bg-dark-400 dark:hover:text-light-800 transition-colors">
+      <MoreVertical size={16} />
+    </button>
+  );
+
+  const handleEdit = () => {
+    router.push(`/questions/${questionId}/edit`);
+  };
+
+  const handleDeleteClick = () => {
+    setDrawerOpen(false);
+    setDeleteDialogOpen(true);
+  };
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button className="text-dark400_light700 hover:text-primary-500 hover:bg-light-800 dark:hover:bg-dark-400 p-1.5 rounded-md transition-colors">
-            <MoreVertical size={18} />
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            onClick={() => router.push(`/questions/${questionId}/edit`)}
+      {isDesktop ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>{triggerButton}</DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            collisionPadding={16}
+            avoidCollisions
           >
-            <Pencil size={14} className="mr-2" />
-            Bewerken
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onSelect={(e) => {
-              e.preventDefault(); // stops the dropdown from swallowing focus before the dialog mounts
-              setDeleteDialogOpen(true);
-            }}
-            className="text-red-500 focus:text-red-500"
-          >
-            <Trash2 size={14} className="mr-2" />
-            Verwijderen
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+            <DropdownMenuItem onClick={handleEdit}>
+              <Pencil size={14} className="mr-2" />
+              Bewerken
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setDeleteDialogOpen(true);
+              }}
+              className="text-red-500 focus:text-red-500"
+            >
+              <Trash2 size={14} className="mr-2" />
+              Verwijderen
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : (
+        <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+          <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
+          <DrawerContent>
+            <DrawerTitle className="sr-only">Vraag opties</DrawerTitle>
+            <div className="flex flex-col gap-1 p-4 pb-8">
+              <button
+                onClick={handleEdit}
+                className="flex items-center gap-3 rounded-md p-3 text-left text-base text-dark200_light900 hover:bg-light-800 dark:hover:bg-dark-400"
+              >
+                <Pencil size={18} />
+                Bewerken
+              </button>
+              <button
+                onClick={handleDeleteClick}
+                className="flex items-center gap-3 rounded-md p-3 text-left text-base text-red-500 hover:bg-light-800 dark:hover:bg-dark-400"
+              >
+                <Trash2 size={18} />
+                Verwijderen
+              </button>
+            </div>
+          </DrawerContent>
+        </Drawer>
+      )}
 
       <DeleteConfirmDialog
         title="Vraag"
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        onDelete={async () => {
-         
-          return await deleteQuestion({ questionId });
-        }}
+        onDelete={() => deleteQuestion({ questionId })}
       />
     </>
   );
