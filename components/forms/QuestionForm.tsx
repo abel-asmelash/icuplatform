@@ -23,7 +23,7 @@ import { MDXEditorMethods } from "@mdxeditor/editor";
 import ROUTES from "@/constants/routes";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-
+ 
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
 interface Params {

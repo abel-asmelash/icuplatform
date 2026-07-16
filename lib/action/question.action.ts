@@ -29,7 +29,7 @@ import Question, { IQuestionDoc } from "@/database/question.model";
 import { NotFoundError, UnauthorizedError } from "../http-error";
 import { revalidatePath } from "next/cache";
 import { Answer, Collection } from "@/database";
- 
+
 export async function createQuestion(
   params: createQuestionParams,
 ): Promise<ActionResponse<IQuestionDoc>> {
@@ -154,9 +154,9 @@ export async function editQuestion(
           (t: ITagDoc) => t.name.toLowerCase() === tag.toLowerCase(),
         ),
     );
-
+   const lowerTags = tags.map((t) => t.toLowerCase());
     const tagsToRemove = question.tags.filter(
-      (tag: ITagDoc) => !tags.includes(tag.name.toLowerCase()),
+      (tag: ITagDoc) => !lowerTags.includes(tag.name.toLowerCase()),
     );
 
     const newTagDocuments = [];
@@ -443,3 +443,100 @@ export async function deleteQuestion(
     mongoSession.endSession();
   }
 }
+// Edit question
+// export async function editQuestion(
+//   params: z.infer<typeof EditQuestionSchema>,
+// ): Promise<ActionResponse<Question>> {
+//   const validationResult = await action({
+//     params,
+//     schema: EditQuestionSchema,
+//     authorize: true,
+//   });
+//   if (validationResult instanceof Error) {
+//     return handleError(validationResult) as ErrorResponse;
+//   }
+
+//   const { questionId, title, content, tags } = validationResult.params!;
+//   const session = validationResult.session;
+
+//   const mongoSession = await mongoose.startSession();
+//   mongoSession.startTransaction();
+
+//   try {
+//     const question = await Question.findById(questionId)
+//       .populate("tags")
+//       .session(mongoSession);
+//     if (!question) throw new NotFoundError("Question");
+
+//     if (question.author.toString() !== session?.user?.id) {
+//       throw new UnauthorizedError(
+//         "U bent niet gemachtigd om deze vraag te bewerken",
+//       );
+//     }
+
+//     if (question.title !== title || question.content !== content) {
+//       question.title = title;
+//       question.content = content;
+//       await question.save({ session: mongoSession });
+//     }
+
+//     // Tag diffing: figure out what was added and removed
+//     const existingTagNames = question.tags.map((t: any) =>
+//       t.name.toLowerCase(),
+//     );
+//     const newTagNames = tags.map((t) => t.toLowerCase());
+
+//     const tagsToAdd = tags.filter(
+//       (t) => !existingTagNames.includes(t.toLowerCase()),
+//     );
+//     const tagsToRemove = question.tags.filter(
+//       (t: any) => !newTagNames.includes(t.name.toLowerCase()),
+//     );
+
+//     // handle removed tags: decrement count, unlink from question
+//     if (tagsToRemove.length > 0) {
+//       await Tag.updateMany(
+//         { _id: { $in: tagsToRemove.map((t: any) => t._id) } },
+//         { $inc: { questions: -1 } },
+//       ).session(mongoSession);
+
+//       await TagQuestion.deleteMany({
+//         tag: { $in: tagsToRemove.map((t: any) => t._id) },
+//         question: questionId,
+//       }).session(mongoSession);
+
+//       question.tags = question.tags.filter(
+//         (t: any) => !tagsToRemove.some((r: any) => r._id.equals(t._id)),
+//       );
+//     }
+
+//     // handle added tags: create if new, link to question
+//     if (tagsToAdd.length > 0) {
+//       const newTagDocuments = [];
+//       for (const tagName of tagsToAdd) {
+//         const existingTag = await Tag.findOneAndUpdate(
+//           { name: { $regex: `^${tagName}$`, $options: "i" } },
+//           { $setOnInsert: { name: tagName }, $inc: { questions: 1 } },
+//           { upsert: true, new: true, session: mongoSession },
+//         );
+//         newTagDocuments.push({
+//           tag: existingTag._id,
+//           question: questionId,
+//         });
+//         question.tags.push(existingTag._id);
+//       }
+//       await TagQuestion.insertMany(newTagDocuments, { session: mongoSession });
+//     }
+
+//     await question.save({ session: mongoSession });
+//     await mongoSession.commitTransaction();
+
+//     revalidatePath(`/questions/${questionId}`);
+//     return { success: true, data: JSON.parse(JSON.stringify(question)) };
+//   } catch (error) {
+//     await mongoSession.abortTransaction();
+//     return handleError(error) as ErrorResponse;
+//   } finally {
+//     mongoSession.endSession();
+//   }
+// }

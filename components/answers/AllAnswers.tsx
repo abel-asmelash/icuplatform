@@ -2,6 +2,9 @@ import { EMPTY_ANSWERS } from "@/constants/states";
 import DataRenderer from "@/components/DataRenderer";
 import AnswerCard from "../card/AnswerCard";
 import Pagination from "../Pagination";
+ 
+import { Answer } from "@/database";
+ 
 type Props = {
   page:number
   isNext:boolean
@@ -33,6 +36,7 @@ const AllAnswers = ({ data , page, isNext, success, error, totalAnswers }: Props
           answers.map((answer) => <AnswerCard key={answer._id} {...answer} />)
         }
       />
+      
       <Pagination page={page} isNext={isNext}/>
     </div>
   );

@@ -3,17 +3,22 @@ import UserAvatar from "../UserAvatar";
 import Link from "next/link";
 import ROUTES from "@/constants/routes";
 import { getTimeStamp } from "@/lib/utils";
+import { auth } from "@/auth";
 import { Preview } from "../editor/Preview";
-import HelpfulButton from "./Helpfulbutton";
-import {auth} from "@/auth"
-import DeleteConfirmDialog from "../DeleteConfirmDialog";
-import { deleteAnswer } from "@/lib/answer.action";
+import AnswerBody from "@/components/answers/AnswerBody";
 
-const AnswerCard = async  ({ _id, author, content, createdAt, helpfulBy }: Answer) => {
-  const session = await auth()
+const AnswerCard = async ({
+  _id,
+  author,
+  content,
+  createdAt,
+  helpfulBy,
+}: Answer) => {
+  const session = await auth();
   const userId = session?.user?.id;
   const isHelpful = userId ? helpfulBy.includes(userId) : false;
-  const isAuthor = userId === author._id
+  const isAuthor = userId === author._id;
+
   return (
     <article className="light-border border-b py-10">
       <span id={JSON.stringify(_id)} className="hash-span">
@@ -38,26 +43,16 @@ const AnswerCard = async  ({ _id, author, content, createdAt, helpfulBy }: Answe
               </p>
             </Link>
           </div>
-          <div className="flex justify-end gap-4">
-            <HelpfulButton
-            answerId={_id}
-            initialIsHelpful={isHelpful}
-            initialCount={helpfulBy.length}
-            />
-            {/* <DeleteConfirmDialog
-            title="Answer"
-            onDelete={async () => {
-              "use server";
-              return await deleteAnswer({
-                answerId:_id
-              })
-            }
-            }
-            /> */}
-          </div>
         </div>
 
-        <Preview content={content} />
+        <AnswerBody
+          answerId={_id}
+          content={content}
+          isHelpful={isHelpful}
+          helpfulCount={helpfulBy.length}
+          isAuthor={isAuthor}
+          preview={<Preview content={content} />}
+        />
       </span>
     </article>
   );

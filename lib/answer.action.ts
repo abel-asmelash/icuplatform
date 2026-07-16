@@ -4,14 +4,19 @@ import Answer, { IAnswer } from "@/database/answer.model";
 import { CreateAnswerParams, GetAnswersParams } from "@/types/action";
 import { ActionResponse, ErrorResponse } from "@/types/actions";
 import action from "./handlers/action";
-import { AnswerServerSchema, DeleteAnswerSchema, GetAnswersSchema, ToggleHelpfulSchema} from "./validations";
+import {
+  AnswerServerSchema,
+  DeleteAnswerSchema,
+  GetAnswersSchema,
+  ToggleHelpfulSchema,
+} from "./validations";
 import handleError from "./handlers/error";
 import mongoose from "mongoose";
 import { Question } from "@/database";
 import { revalidatePath } from "next/cache";
 import ROUTES from "@/constants/routes";
-import {z} from "zod"
-
+import { z } from "zod";
+import { EditAnswerSchema } from "./validations";
 export async function createAnswer(
   params: CreateAnswerParams,
 ): Promise<ActionResponse<IAnswer>> {
@@ -154,7 +159,7 @@ export async function toggleHelpful(params: {
 
     if (alreadyMarked) {
       answer.helpfulBy = answer.helpfulBy.filter(
-        (id:mongoose.Types.ObjectId) => id.toString() !== userId,
+        (id: mongoose.Types.ObjectId) => id.toString() !== userId,
       );
     } else {
       answer.helpfulBy.push(new mongoose.Types.ObjectId(userId));
@@ -176,43 +181,82 @@ export async function toggleHelpful(params: {
 // Delete answer functionality
 
 export async function deleteAnswer(
-  params:z.infer<typeof DeleteAnswerSchema>
-):Promise<ActionResponse>{
+  params: z.infer<typeof DeleteAnswerSchema>,
+): Promise<ActionResponse> {
   const validation = await action({
     params,
-    schema:DeleteAnswerSchema,
-    authorize:true
-  })
+    schema: DeleteAnswerSchema,
+    authorize: true,
+  });
 
-if(validation instanceof Error){
-  return handleError(validation) as ErrorResponse
-}
- const {answerId} = validation.params!;
- const userId = validation?.session?.user?.id
- if(!userId){
-  return handleError(new Error("Unauthorized")) as ErrorResponse
- }
- const session = await mongoose.startSession()
- session.startTransaction()
- try {
-  const answer = await Answer.findById(answerId).session(session)
-  if(!answer) throw new Error("Answer not found")
-    if(answer.author.toString() !== userId){
-      throw new Error("You are not authorized to delete this answer")
+  if (validation instanceof Error) {
+    return handleError(validation) as ErrorResponse;
+  }
+  const { answerId } = validation.params!;
+  const userId = validation?.session?.user?.id;
+  if (!userId) {
+    return handleError(new Error("Unauthorized")) as ErrorResponse;
+  }
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const answer = await Answer.findById(answerId).session(session);
+    if (!answer) throw new Error("Answer not found");
+    if (answer.author.toString() !== userId) {
+      throw new Error("You are not authorized to delete this answer");
     }
     await Question.findByIdAndUpdate(
-      answer.question, 
-      {$inc:{answers: -1}},
-      {session},
-    )
-    await Answer.findByIdAndDelete(answerId, {session})
-    await session.commitTransaction()
-    revalidatePath(ROUTES.QUESTION(answer.question.toString()))
-    return {success: true}
- } catch (error) {
-  await session.abortTransaction()
-  return handleError(error) as ErrorResponse
- }finally{
-  await session.endSession()
- }
+      answer.question,
+      { $inc: { answers: -1 } },
+      { session },
+    );
+    await Answer.findByIdAndDelete(answerId, { session });
+    await session.commitTransaction();
+    revalidatePath(ROUTES.QUESTION(answer.question.toString()));
+    return { success: true };
+  } catch (error) {
+    await session.abortTransaction();
+    return handleError(error) as ErrorResponse;
+  } finally {
+    await session.endSession();
+  }
+}
+// Edit answer
+export async function editAnswer(
+  params: z.infer<typeof EditAnswerSchema>,
+): Promise<ActionResponse<IAnswer>> {
+  const validation = await action({
+    params,
+    schema: EditAnswerSchema,
+    authorize: true,
+  });
+
+  if (validation instanceof Error) {
+    return handleError(validation) as ErrorResponse;
+  }
+
+  const { answerId, content } = validation.params!;
+  const userId = validation.session?.user?.id;
+
+  if (!userId) {
+    return handleError(new Error("Unauthorized")) as ErrorResponse;
+  }
+
+  try {
+    const answer = await Answer.findById(answerId);
+    if (!answer) throw new Error("Answer not found");
+
+    if (answer.author.toString() !== userId) {
+      throw new Error("You are not authorized to edit this answer");
+    }
+
+    answer.content = content;
+    await answer.save();
+
+    revalidatePath(ROUTES.QUESTION(answer.question.toString()));
+
+    return { success: true, data: JSON.parse(JSON.stringify(answer)) };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
 }

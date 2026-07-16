@@ -9,7 +9,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import HelpfulQuestionButton from "@/components/card/HelpfulQuestionButton";
 
-import { deleteQuestion } from "@/lib/action/question.action";
+ 
 import QuestionActions from "@/components/QuestionActions";
 interface Props {
   question: {
