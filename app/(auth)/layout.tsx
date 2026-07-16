@@ -2,9 +2,11 @@ import { ReactNode } from "react";
 import SocialAuthForm from "@/components/forms/SocialAuthForm";
 import Image from "next/image";
  import AuroraBg from "@/components/AuroraBg";
+ import Animatedbg from "@/components/Animatedbg"
 const AuthLayout = ({ children }: { children: ReactNode }) => {
   return (
     <main className="flex min-h-screen items-center justify-center bg-auth-light px-4 py-10">
+      <Animatedbg />
       <AuroraBg />
       <section className="realtive light-border background-light900_dark200 shadow-light100 dark10 min-w-full rounded-[10px] border px-4 py-10 shadow-md sm:min-w-130 sm:px-8">
         <div className="flex flex-col items-center text-center gap-4">
@@ -14,14 +16,18 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
               alt="icu logo"
               width={90}
               height={90}
-              className="rounded-full hover:scale-105 transition-transform duration-300"
+              className="rounded-full hover:scale-105 hover:rotate-6 transition-all duration-300 animate-pulse-slow"
             />
           </div>
-          <div className="space-y-2.5">
-            <h1 className="h2-bold text-dark100 dark:text-light-900">
-              Join Icu <span className="text-yellow-400">Q&A</span> Platform
+          <div className="space-y-2.5 animate-fade-in">
+            <h1 className="h2-bold text-dark100 dark:text-light-900 animate-slide-down">
+              Join Icu{" "}
+              <span className="text-yellow-400 inline-block hover:scale-110 hover:rotate-3 transition-transform duration-300 animate-glow-text">
+                Q&A
+              </span>{" "}
+              Platform
             </h1>
-            <p className="paragraph-regular text-dark500 dark:text-light-400">
+            <p className="paragraph-regular text-dark500 dark:text-light-400 animate-slide-up animation-delay-300 hover:translate-x-2 transition-transform duration-300">
               Krijg antwoord op je bijbelse vragen
             </p>
           </div>
@@ -29,13 +35,27 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
 
         {children}
         <SocialAuthForm />
-        <div className="mt-6 text-center">
-          <span className="text-xs sm:text-sm text-gray-200 italic font-light tracking-wide leading-relaxed block max-w-md mx-auto">
-            “Komt een van u wijsheid tekort? <br /> Vraag God erom en hij die aan iedereen geeft, zonder voorbehouden en zonder verwijt, zal u wijsheid geven”
-          </span>
-          <span className="text-[10px] sm:text-xs text-gray-300/70 font-light tracking-wider uppercase block mt-1">
-            — James 1:5
-          </span>
+        <div className="mt-6 text-center animate-fade-in">
+          <div className="relative max-w-md mx-auto">
+            {/* Decorative line */}
+            <div className="absolute left-1/2 -translate-x-1/2 -top-4 w-16 h-px bg-gradient-to-r from-transparent via-yellow-400/40 to-transparent"></div>
+
+            <span className="text-xs sm:text-sm text-gray-200 italic font-light tracking-wide leading-relaxed block animate-slide-up hover:text-white transition-colors duration-500">
+              “Komt een van u wijsheid tekort? <br />
+              <span className="hover:text-yellow-400/80 transition-colors duration-300">
+                Vraag God erom
+              </span>{" "}
+              en hij die aan iedereen geeft, zonder voorbehouden en zonder
+              verwijt, zal u wijsheid geven”
+            </span>
+
+            {/* Animated underline */}
+            <div className="w-0 h-px bg-gradient-to-r from-yellow-400/0 via-yellow-400/40 to-yellow-400/0 mx-auto mt-2 animate-expand-width"></div>
+
+            <span className="text-[10px] sm:text-xs text-gray-300/70 font-light tracking-wider uppercase block mt-2 animate-slide-up animation-delay-200 hover:tracking-[0.2em] transition-all duration-500">
+              — James 1:5
+            </span>
+          </div>
         </div>
       </section>
     </main>
