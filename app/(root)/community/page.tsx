@@ -35,7 +35,7 @@ const CommunityPage = async ({ searchParams }: RouteParams) => {
         error={error}
         data={users}
         render={(users) => (
-          <div className="mt-12 flex flex-wrap gap-5">
+          <div className="mt-12 flex flex-wrap gap-5 mb-4">
             {users.map((user) => (
               <UserCard
                 key={user._id}
@@ -48,7 +48,7 @@ const CommunityPage = async ({ searchParams }: RouteParams) => {
           </div>
         )}
       />
-      <Pagination page={Number(page) || 1} isNext={isNext || false} />
+      <Pagination  page={Number(page) || 1} isNext={isNext || false} />
     </div>
   );
 };
