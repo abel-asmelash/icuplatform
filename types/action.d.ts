@@ -31,7 +31,7 @@ export interface EditQuestionParams extends createQuestionParams {
 export interface GetQuestionParams {
   questionId: string;
 }
-export interface GetQuestionParams extends Omit<
+export interface GetTagQuestionParams extends Omit<
   PaginatedSearchParams,
   "filter"
 > {
@@ -46,4 +46,10 @@ export interface CreateAnswerParams {
 }
 export interface GetAnswersParams extends PaginatedSearchParams {
   questionId: string;
+}
+export interface RecommendationParams {
+  userId: string;
+  query?: string;
+  skip: number;
+  limit: number;
 }

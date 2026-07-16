@@ -12,7 +12,7 @@ const CommunityPage = async ({ searchParams }: RouteParams) => {
     page: Number(page) || 1,
     pageSize: Number(pageSize) || 10,
     query: typeof query === "string" ? query : undefined,
-   filter: typeof filter === "string" ? filter : undefined,
+    filter: typeof filter === "string" ? filter : undefined,
   });
 
   const { users, isNext } = data || {};
@@ -48,7 +48,7 @@ const CommunityPage = async ({ searchParams }: RouteParams) => {
           </div>
         )}
       />
-      <Pagination page={Number(page) || 1} isNext={isNext || false}/>
+      <Pagination page={Number(page) || 1} isNext={isNext || false} />
     </div>
   );
 };
