@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-const blobs = [
+const pageBlobs = [
   {
     size: 500,
     color: "rgba(234, 179, 8, 0.15)",
@@ -27,12 +27,34 @@ const blobs = [
   },
 ];
 
-const floatingIcons = [
+const cardBlobs = [
+  {
+    size: 140,
+    color: "rgba(234, 179, 8, 0.12)",
+    top: "-20%",
+    left: "-10%",
+    duration: 16,
+  },
+  {
+    size: 110,
+    color: "rgba(249, 115, 22, 0.1)",
+    top: "50%",
+    left: "70%",
+    duration: 20,
+  },
+];
+
+const pageIcons = [
   { icon: "fa-cross", left: "15%", size: 16, duration: 16, delay: 0 },
   { icon: "fa-dove", left: "75%", size: 20, duration: 20, delay: 4 },
   { icon: "fa-cross", left: "45%", size: 14, duration: 14, delay: 8 },
   { icon: "fa-dove", left: "25%", size: 16, duration: 22, delay: 2 },
   { icon: "fa-cross", left: "85%", size: 15, duration: 18, delay: 6 },
+];
+
+const cardIcons = [
+  { icon: "fa-cross", left: "20%", size: 10, duration: 14, delay: 0 },
+  { icon: "fa-dove", left: "70%", size: 12, duration: 18, delay: 3 },
 ];
 
 type Particle = {
@@ -91,10 +113,10 @@ function FloatingParticles({ count = 20 }: { count?: number }) {
   );
 }
 
-function FloatingIcons() {
+function FloatingIcons({ icons }: { icons: typeof pageIcons }) {
   return (
     <>
-      {floatingIcons.map((item, i) => (
+      {icons.map((item, i) => (
         <motion.div
           key={i}
           className="absolute text-amber-300/30"
@@ -119,16 +141,29 @@ function FloatingIcons() {
   );
 }
 
-export default function AnimatedBackground() {
+type AnimatedBackgroundProps = {
+  variant?: "page" | "card";
+};
+
+export default function AnimatedBackground({
+  variant = "page",
+}: AnimatedBackgroundProps) {
+  const isCard = variant === "card";
+  const blobs = isCard ? cardBlobs : pageBlobs;
+  const icons = isCard ? cardIcons : pageIcons;
+  const particleCount = isCard ? 6 : 20;
+  const blurClass = isCard ? "blur-xl" : "blur-3xl";
+
   return (
     <div className="absolute inset-0 overflow-hidden -z-10">
-      {/* base dark gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-neutral-950 to-black" />
+      {!isCard && (
+        <div className="absolute inset-0 bg-gradient-to-br from-black via-neutral-950 to-black" />
+      )}
 
       {blobs.map((blob, i) => (
         <motion.div
           key={i}
-          className="absolute rounded-full blur-3xl"
+          className={`absolute rounded-full ${blurClass}`}
           style={{
             width: blob.size,
             height: blob.size,
@@ -149,8 +184,8 @@ export default function AnimatedBackground() {
         />
       ))}
 
-      <FloatingParticles count={20} />
-      <FloatingIcons />
+      <FloatingParticles count={particleCount} />
+      <FloatingIcons icons={icons} />
     </div>
   );
 }
