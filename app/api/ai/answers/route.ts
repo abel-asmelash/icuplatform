@@ -6,6 +6,29 @@ import { groq } from "@ai-sdk/groq";
 import { generateText } from "ai";
 import { NextResponse } from "next/server";
 
+const bannedWords = [
+  "fuck",
+  "shit",
+  "bitch",
+  "asshole",
+  "idiot",
+  "bastard",
+  "damn",
+  "crap",
+  // Dutch equivalents worth including too, given your audience:
+  "klote",
+  "kut",
+  "kanker",
+  "lul",
+  "eikel",
+];
+function containsProfanity(text: string): boolean {
+  const normalized = text.toLowerCase();
+  return bannedWords.some((word) => {
+    const pattern = new RegExp(`\\b${word}\\b`, "i");
+    return pattern.test(normalized);
+  });
+}
 export async function POST(req: Request) {
   const { question, content, userAnswer } = await req.json();
   try {
@@ -16,6 +39,14 @@ export async function POST(req: Request) {
     });
     if (!validatedData.success) {
       throw new ValidationError(validatedData.error.flatten().fieldErrors);
+    }
+    const textToCheck = [question, content, userAnswer].join(" ");
+    if (containsProfanity(textToCheck)) {
+      throw new ValidationError({
+        userAnswer: [
+          "Gebruik alstublieft respectvolle taal in je vraag of antwoord.",
+        ],
+      });
     }
 
     const { text } = await generateText({

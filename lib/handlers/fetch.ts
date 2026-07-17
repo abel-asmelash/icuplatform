@@ -40,12 +40,16 @@ export async function fetchHandler<T>(
   try {
     const response = await fetch(url, config);
     clearTimeout(id);
-
+    const responseBody = await response.json();
     if (!response.ok) {
-      throw new RequestError(response.status, `HTTP error: ${response.status}`);
+      throw new RequestError(
+        response.status,
+        responseBody?.error?.message || `HTTP error: ${response.status}`,
+        responseBody?.error?.details,
+      );
     }
 
-    return await response.json();
+    return responseBody;
   } catch (err) {
     const error = isError(err) ? err : new Error("Unknown error");
 
