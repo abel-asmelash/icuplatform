@@ -38,21 +38,21 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
         <div className="mt-6 text-center animate-fade-in">
           <div className="relative max-w-md mx-auto">
             {/* Decorative line */}
-            <div className="absolute left-1/2 -translate-x-1/2 -top-4 w-16 h-px bg-gradient-to-r from-transparent via-yellow-400/40 to-transparent"></div>
+            <div className="absolute left-1/2 -translate-x-1/2 -top-4 w-16 h-px bg-linear-to-r from-transparent via-yellow-400/40 to-transparent"></div>
 
-            <span className="text-xs sm:text-sm text-gray-200 italic font-light tracking-wide leading-relaxed block animate-slide-up hover:text-white transition-colors duration-500">
-              “Komt een van u wijsheid tekort? <br />
-              <span className="hover:text-yellow-400/80 transition-colors duration-300">
+            <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-200 italic font-light tracking-wide leading-relaxed block animate-slide-up hover:text-gray-900 dark:hover:text-white transition-colors duration-500">
+              &ldquo;Komt een van u wijsheid tekort? <br />
+              <span className="hover:text-yellow-600 dark:hover:text-yellow-400/80 transition-colors duration-300">
                 Vraag God erom
               </span>{" "}
               en hij die aan iedereen geeft, zonder voorbehouden en zonder
-              verwijt, zal u wijsheid geven”
+              verwijt, zal u wijsheid geven&rdquo;
             </span>
 
             {/* Animated underline */}
-            <div className="w-0 h-px bg-gradient-to-r from-yellow-400/0 via-yellow-400/40 to-yellow-400/0 mx-auto mt-2 animate-expand-width"></div>
+            <div className="w-0 h-px bg-linear-to-r from-yellow-400/0 via-yellow-400/40 to-yellow-400/0 mx-auto mt-2 animate-expand-width"></div>
 
-            <span className="text-[10px] sm:text-xs text-gray-300/70 font-light tracking-wider uppercase block mt-2 animate-slide-up animation-delay-200 hover:tracking-[0.2em] transition-all duration-500">
+            <span className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-300/70 font-light tracking-wider uppercase block mt-2 animate-slide-up animation-delay-200 hover:tracking-[0.2em] transition-all duration-500">
               — James 1:5
             </span>
           </div>
