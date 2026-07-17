@@ -1,7 +1,7 @@
-import Link from "next/link";
+ 
 import Image from "next/image";
 import { Avatar, AvatarFallback } from "./ui/avatar";
-import ROUTES from "@/constants/routes";
+ 
 import { cn } from "@/lib/utils";
 
 interface UserAvatarProps {
@@ -13,7 +13,7 @@ interface UserAvatarProps {
 }
 
 const UserAvatar = ({
-  id,
+ 
   name,
   imageUrl,
   className = "h-9 w-9",
@@ -26,7 +26,7 @@ const UserAvatar = ({
     .toUpperCase();
 
   return (
-    <Link href={ROUTES.PROFILE(id)}>
+   
       <Avatar className={cn("relative", className)}>
         {imageUrl ? (
           <Image
@@ -42,7 +42,7 @@ const UserAvatar = ({
           </AvatarFallback>
         )}
       </Avatar>
-    </Link>
+ 
   );
 };
 

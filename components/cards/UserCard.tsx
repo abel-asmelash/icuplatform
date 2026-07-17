@@ -1,7 +1,7 @@
 import React from "react";
 import UserAvatar from "../UserAvatar";
-import Link from "next/link";
-import ROUTES from "@/constants/routes";
+ 
+ 
 
 interface UserCardProps {
   _id: string;
@@ -21,7 +21,7 @@ const UserCard = ({ _id, name, image, username }: UserCardProps) => {
           className="`size-25` rounded-full object-cover"
           fallbackClassName="text-3xl tracking-wides"
         />
-        <Link href={ROUTES.PROFILE(_id)}>
+ 
           <div className="mt-4 text-center">
             <h3 className="h3-bold text-dark200_light900 line-clamp-1">
               {name}
@@ -30,7 +30,7 @@ const UserCard = ({ _id, name, image, username }: UserCardProps) => {
               @{username}
             </p>
           </div>
-        </Link>
+     
       </article>
     </div>
   );
