@@ -24,7 +24,7 @@ const CommunityPage = async ({ searchParams }: RouteParams) => {
         <LocalSearch
           route={ROUTES.COMMUNITY}
           iconPosition="left"
-          imgSrc="/public/assets/search.svg"
+          imgSrc="/assets/search.svg"
           placeholder="Search some great members of Icu"
           otherClasses="flex-1"
         />
@@ -48,7 +48,7 @@ const CommunityPage = async ({ searchParams }: RouteParams) => {
           </div>
         )}
       />
-      <Pagination  page={Number(page) || 1} isNext={isNext || false} />
+      <Pagination page={Number(page) || 1} isNext={isNext || false} />
     </div>
   );
 };
