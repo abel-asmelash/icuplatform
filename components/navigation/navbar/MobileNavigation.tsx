@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { auth, signOut } from "@/auth";
- 
+
 import {
   Sheet,
   SheetClose,
@@ -21,7 +21,7 @@ const MobileNavigation = async () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <button className="md:hidden">
+        <button className="shrink-0 md:hidden">
           <Image
             src="/assets/humbergur.svg"
             width={36}
@@ -40,7 +40,7 @@ const MobileNavigation = async () => {
             <SheetTitle className="hidden">Are you absolutely sure?</SheetTitle>
             <Link href="/" className="flex items-center gap-1">
               <Image
-                src="/assets/icu-logo.svg"
+                src="/assets/icu-logo.png"
                 alt="Logo"
                 width={23}
                 height={23}
@@ -69,9 +69,7 @@ const MobileNavigation = async () => {
                     className="base-medium w-fit `bg-transparent!` px-4 py-3"
                   >
                     <LogOut className="size-5 text-black dark:text-white" />
-                    <span className=" text-dark300_light900">
-                      Logout
-                    </span>
+                    <span className=" text-dark300_light900">Logout</span>
                   </Button>
                 </form>
               </SheetClose>

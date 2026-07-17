@@ -5,12 +5,12 @@ import MobileNavigation from "./MobileNavigation";
 import { auth } from "@/auth";
 import UserAvatar from "@/components/UserAvatar";
 
-const Navbar = async() => {
-  const session = await auth()
+const Navbar = async () => {
+  const session = await auth();
   return (
     <nav className="flex items-center justify-between fixed z-50 w-full gap-5 p-6 bg-white dark:bg-gray-900 shadow-md sm:px-12">
-      <Link href="/" className="flex items-center gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-500 shadow-lg">
+      <Link href="/" className="flex shrink-0 items-center gap-3">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-500 shadow-lg">
           <Image
             src="/assets/icu-logo.png"
             alt="ICU icon"
@@ -20,7 +20,7 @@ const Navbar = async() => {
           />
         </div>
 
-        <div className="flex flex-col leading-none">
+        <div className="hidden flex-col leading-none sm:flex">
           <span className="text-2xl font-black font-space-grotesk text-primary-500">
             Ask <span className="text-foreground">ICU</span>
           </span>
@@ -30,9 +30,9 @@ const Navbar = async() => {
         </div>
       </Link>
 
-      <p>Global Search</p>
+      <p className="hidden truncate sm:block">Language Section</p>
 
-      <div className="flex items-center gap-5">
+      <div className="flex shrink-0  items-center gap-3 sm:gap-5">
         <Theme />
         {session?.user?.id && (
           <UserAvatar
