@@ -2,7 +2,7 @@ declare global {
   interface Tag {
     _id: string;
     name: string;
-    questions?:number
+    questions?: number;
   }
   interface Author {
     _id: string;
@@ -37,14 +37,14 @@ declare global {
     createdAt: Date;
     updatedAt: Date;
   }
-  
-interface PaginatedSearchParams {
-  page?: number;
-  pageSize?: number;
-  query?: string;
-  filter?: string;
-  sort?: string;
-}
+
+  interface PaginatedSearchParams {
+    page?: number;
+    pageSize?: number;
+    query?: string;
+    filter?: string;
+    sort?: string;
+  }
 
   interface GetTagQuestionsParams {
     tagId: string;
@@ -59,23 +59,22 @@ interface PaginatedSearchParams {
   }
 }
 interface Answer {
-  _id: string
-  author:Author
-  content:string
-  createdAt:Date
-  helpfulBy:string[]
-
+  _id: string;
+  author: Author;
+  content: string;
+  createdAt: Date;
+  helpfulBy: string[];
 }
-interface User{
-  _id:string 
-  name:string
-  username:string
-  email:string
-  image?:string
-  bio?:string
+interface User {
+  _id: string;
+  name: string;
+  username: string;
+  email: string;
+  image?: string;
+  bio?: string;
 }
 interface Collection {
-  _id:string
-  author:string | Author 
-  question: Question
+  _id: string;
+  author: string | Author;
+  question: Question;
 }
