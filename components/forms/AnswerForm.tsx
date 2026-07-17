@@ -19,7 +19,7 @@ import { createAnswer } from "@/lib/answer.action";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import type { MDXEditorMethods } from "@mdxeditor/editor";
- import { api } from "@/lib/api";  
+import { api } from "@/lib/api";
 
 interface Props {
   questionId: string;
@@ -49,7 +49,7 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
         toast.success("Success", {
           description: "Your answer has been posted succesfully",
         });
-    
+
         if (editorRef.current) {
           editorRef.current.setMarkdown("");
         }
@@ -62,24 +62,27 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
   };
 
   const handleGenerateAIAnswer = async () => {
-    
     if (session.status !== "authenticated") {
       return toast.error("Gelieve eerst in te loggen", {
         description: "U moet ingelogd zijn om deze functie te gebruiken.",
       });
     }
-    
+
     const userAnswer = editorRef.current?.getMarkdown()?.trim();
-    if(!userAnswer){
-       toast.error("Formuleer eerst een antwoord", {
-         description:
-           "Typ eerst een eerste aanzet. De AI helpt je daarna om je antwoord verder te verfijnen.",
-       });
-       return
+    if (!userAnswer) {
+      toast.error("Formuleer eerst een antwoord", {
+        description:
+          "Typ eerst een eerste aanzet. De AI helpt je daarna om je antwoord verder te verfijnen.",
+      });
+      return;
     }
     setIsAISubmitting(true);
     try {
-      const result = await api.ai.getAnswer(questionTitle, questionContent, userAnswer);
+      const result = await api.ai.getAnswer(
+        questionTitle,
+        questionContent,
+        userAnswer,
+      );
       if (!result.success) {
         return toast.error("Error", {
           description: result.error?.message,
@@ -149,8 +152,8 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
               <FormItem className="flex w-full flex-col gap-3">
                 <FormControl className="mt-3.5">
                   <Editor
-                    ref={editorRef}
-                    value={field.value ?? ""}
+                    editorRef={editorRef}
+                    markdown={field.value ?? ""}
                     fieldChange={field.onChange}
                   />
                 </FormControl>

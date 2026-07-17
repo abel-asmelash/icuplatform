@@ -32,6 +32,7 @@ export async function POST(req:Request){
             success:true, data:text
         }, {status:200})
     } catch (error) {
+        console.error("AI generation failed:", error);
         return handleError(error, "api") as APIErrorResponse
     }
 }
