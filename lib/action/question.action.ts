@@ -31,7 +31,7 @@ import { revalidatePath } from "next/cache";
 import { Answer, Collection } from "@/database";
 import { Types } from "mongoose";
 import Interaction from "@/database/interaction.model";
- 
+
 import { RecommendationParams } from "@/types/action";
 
 export async function createQuestion(
@@ -261,7 +261,7 @@ export async function getRecommendedQuestions({
     .sort({ createdAt: -1 })
     .limit(50)
     .lean();
-  
+
   const interactedQuestionIds = interactions.map((i) => i.actionId);
 
   const interactedQuestions = await Question.find({
@@ -269,17 +269,24 @@ export async function getRecommendedQuestions({
   })
     .populate("tags", "_id name")
     .select("tags");
-   
+
   const allTags = interactedQuestions.flatMap((q) =>
     q.tags.map((tag: Types.ObjectId) => tag.toString()),
   );
 
   const uniqueTagIds = [...new Set(allTags)];
-  console.log("uniqueTagIds:", uniqueTagIds);
+
   const recommendedQuery: FilterQuery<typeof Question> = {
     author: { $ne: new Types.ObjectId(userId) },
-    tags: { $in: uniqueTagIds.map((id) => new Types.ObjectId(id)) },
   };
+
+  const hasInteractionHistory = uniqueTagIds.length > 0;
+
+  if (hasInteractionHistory) {
+    recommendedQuery.tags = {
+      $in: uniqueTagIds.map((id) => new Types.ObjectId(id)),
+    };
+  }
 
   if (query) {
     recommendedQuery.$or = [
@@ -293,7 +300,7 @@ export async function getRecommendedQuestions({
   const questions = await Question.find(recommendedQuery)
     .populate("tags", "name")
     .populate("author", "name image")
-    .sort({ upvotes: -1, views: -1 })
+    .sort({ helpfulCount: -1, views: -1 })
     .skip(skip)
     .limit(limit)
     .lean();
@@ -451,6 +458,7 @@ export async function toggleQuestionHelpful(params: {
       question.helpfulBy.push(new mongoose.Types.ObjectId(userId));
     }
 
+    question.helpfulCount = question.helpfulBy.length;
     await question.save();
 
     return {

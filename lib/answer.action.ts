@@ -164,7 +164,8 @@ export async function toggleHelpful(params: {
     } else {
       answer.helpfulBy.push(new mongoose.Types.ObjectId(userId));
     }
-
+     
+    answer.helpfulCount = answer.helpfulBy.length; 
     await answer.save();
 
     return {

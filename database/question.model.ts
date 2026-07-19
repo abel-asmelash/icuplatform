@@ -1,4 +1,5 @@
 import { Schema, model, models, Types, Document } from "mongoose";
+import { number } from "zod";
 
 export interface IQuestion {
   title: string;
@@ -9,6 +10,7 @@ export interface IQuestion {
   author: Types.ObjectId;
   upvotes: number;
   helpfulBy: Types.ObjectId[];
+  helpfulCount:number
 }
 
 export interface IQuestionDoc extends IQuestion, Document {
@@ -25,6 +27,7 @@ const QuestionSchema = new Schema<IQuestion>(
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
     upvotes: { type: Number, default: 0 },
     helpfulBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    helpfulCount: { type: Number, default: 0 },
   },
   { timestamps: true },
 );
