@@ -3,13 +3,11 @@
 import type { ForwardedRef } from "react";
 import {
   headingsPlugin,
- 
   quotePlugin,
   thematicBreakPlugin,
   markdownShortcutPlugin,
   MDXEditor,
   type MDXEditorMethods,
-  
   toolbarPlugin,
   ConditionalContents,
   UndoRedo,
@@ -17,16 +15,11 @@ import {
   ChangeCodeMirrorLanguage,
   codeBlockPlugin,
   codeMirrorPlugin,
- 
   linkDialogPlugin,
-  ListsToggle,
-  
-  
-  // Separator,
+  Separator,
 } from "@mdxeditor/editor";
- 
 
-interface Props  {
+interface Props {
   value: string;
   fieldChange: (value: string) => void;
   editorRef: ForwardedRef<MDXEditorMethods> | null;
@@ -36,8 +29,6 @@ export default function InitializedMDXEditor({
   editorRef,
   fieldChange,
   value,
- 
- 
 }: Props) {
   return (
     <MDXEditor
@@ -46,13 +37,13 @@ export default function InitializedMDXEditor({
       className="background-light800_dark400 light-border-2 grid markdown-editor w-full border `min-h-50` caret-white"
       plugins={[
         headingsPlugin(),
-       
+
         quotePlugin(),
         thematicBreakPlugin(),
         markdownShortcutPlugin(),
-       
+
         linkDialogPlugin(),
-        // imagePlugin(),
+
         codeBlockPlugin({ defaultCodeBlockLanguage: "js" }),
         codeMirrorPlugin({
           codeBlockLanguages: {
@@ -71,15 +62,8 @@ export default function InitializedMDXEditor({
                   fallback: () => (
                     <>
                       <UndoRedo />
-                      {/* <Separator /> */}
+                      <Separator />
                       <BoldItalicUnderlineToggles />
-                      
-                      {/* <Separator /> */}
-                      <ListsToggle />
-                      {/* <Separator /> */}
-                     
-                      {/* <Separator /> */}
-                       
                     </>
                   ),
                 },
@@ -88,7 +72,6 @@ export default function InitializedMDXEditor({
           ),
         }),
       ]}
-    
       ref={editorRef ?? null}
     />
   );

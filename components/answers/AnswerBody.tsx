@@ -18,7 +18,7 @@ interface Props {
   isHelpful: boolean;
   helpfulCount: number;
   isAuthor: boolean;
-  preview: React.ReactNode; // ← rendered Preview passed in from the server parent
+  preview: React.ReactNode;  
 }
 
 const AnswerBody = ({
@@ -89,7 +89,7 @@ const AnswerBody = ({
               type="button"
               onClick={handleSave}
               disabled={isPending}
-              className="primary-gradient !text-light-900"
+              className="primary-gradient text-light-900!"
             >
               {isPending ? "Opslaan..." : "Opslaan"}
             </Button>
