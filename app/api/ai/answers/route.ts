@@ -7,20 +7,71 @@ import { generateText } from "ai";
 import { NextResponse } from "next/server";
 
 const bannedWords = [
+  // English
   "fuck",
+  "fucking",
+  "fucked",
+  "motherfucker",
+  "motherfucking",
   "shit",
+  "shitty",
+  "bullshit",
   "bitch",
-  "asshole",
-  "idiot",
+  "bitches",
   "bastard",
+  "asshole",
+  "ass",
+  "dick",
+  "cock",
+  "cunt",
+  "pussy",
+  "slut",
+  "whore",
+  "prick",
+  "twat",
+  "wanker",
+  "jerk",
+  "moron",
+  "idiot",
+  "stupid",
+  "dumbass",
+  "dipshit",
+  "jackass",
+  "loser",
+  "retard",
   "damn",
   "crap",
-  // Dutch equivalents worth including too, given your audience:
-  "klote",
+  "hell",
+
+  // Dutch
   "kut",
+  "klote",
+  "klootzak",
+  "kutwijf",
+  "kuthoer",
+  "kutjong",
+  "tering",
+  "tyfus",
   "kanker",
+  "kankerlijer",
+  "kankerhoer",
+  "kankerlul",
+  "kankerkop",
+  "mongool",
+  "debiel",
+  "idioot",
   "lul",
+  "lulhannes",
   "eikel",
+  "sukkel",
+  "hufter",
+  "hoer",
+  "hoerenjong",
+  "flikker",
+  "trut",
+  "zak",
+  "rotzak",
+  "pisnicht",
 ];
 function containsProfanity(text: string): boolean {
   const normalized = text.toLowerCase();
@@ -41,6 +92,7 @@ export async function POST(req: Request) {
       throw new ValidationError(validatedData.error.flatten().fieldErrors);
     }
     const textToCheck = [question, content, userAnswer].join(" ");
+    
     if (containsProfanity(textToCheck)) {
       throw new ValidationError({
         userAnswer: [
