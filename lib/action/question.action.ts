@@ -31,9 +31,8 @@ import { revalidatePath } from "next/cache";
 import { Answer, Collection } from "@/database";
 import { Types } from "mongoose";
 import Interaction from "@/database/interaction.model";
-
 import { RecommendationParams } from "@/types/action";
-
+import {generateTagDescription} from "@/lib/tag-description"
 export async function createQuestion(
   params: createQuestionParams,
 ): Promise<ActionResponse<IQuestionDoc>> {
@@ -81,8 +80,9 @@ export async function createQuestion(
           { $inc: { questions: 1 } },
           { session },
         );
-      } else {
-        const [newTag] = await Tag.create([{ name: tag, questions: 1 }], {
+      } else { 
+        const description = await generateTagDescription(tag)
+        const [newTag] = await Tag.create([{ name: tag, questions: 1, description }], {
           session,
         });
         existingTag = newTag;
@@ -166,10 +166,11 @@ export async function editQuestion(
     const newTagDocuments = [];
 
     if (tagsToAdd.length > 0) {
-      for (const tag of tagsToAdd) {
+      for (const tag of tagsToAdd) { 
+        const description = await generateTagDescription(tag)
         const existingTag = await Tag.findOneAndUpdate(
           { name: { $regex: `^${tag}$`, $options: "i" } },
-          { $setOnInsert: { name: tag }, $inc: { questions: 1 } },
+          { $setOnInsert: { name: tag, description }, $inc: { questions: 1 } },
           { upsert: true, new: true, session },
         );
         if (existingTag) {

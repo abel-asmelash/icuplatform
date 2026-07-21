@@ -51,6 +51,7 @@ const Tags = async ({ searchParams }: SearchParams) => {
               _id={tag._id.toString()}
               name={tag.name}
               questions={tag.questions}
+              description={tag.description}
             />
           ))
         ) : (

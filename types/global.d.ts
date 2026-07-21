@@ -3,6 +3,8 @@ declare global {
     _id: string;
     name: string;
     questions?: number;
+    description: string;
+    createdAt?: string;
   }
   interface Author {
     _id: string;
