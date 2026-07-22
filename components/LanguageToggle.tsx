@@ -7,7 +7,7 @@ import { Languages } from "lucide-react";
 const LanguageToggle = () => {
   const temporaryMessage = () => {
     toast.info(
-      "Translation support is currently in development. This functionality will be available with our upcoming release.",
+      "Language translation is coming soon! We're finalizing it for our first major update. Check back shortly!",
     );
   };
 
