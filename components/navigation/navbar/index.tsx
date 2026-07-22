@@ -4,8 +4,9 @@ import Image from "next/image";
 import MobileNavigation from "./MobileNavigation";
 import { auth } from "@/auth";
 import UserAvatar from "@/components/UserAvatar";
-import { Button } from "@/components/ui/button";
-import { Languages } from "lucide-react";
+import LanguageToggle from "@/components/LanguageToggle";
+ 
+ 
 const Navbar = async () => {
   const session = await auth();
   return (
@@ -31,10 +32,7 @@ const Navbar = async () => {
         </div>
       </Link>
 
-      <Button variant="outline" size="icon" className="shrink-0">
-        <Languages className="h-[1.2rem] w-[1.2rem]" />
-        <span className="sr-only">Change language</span>
-      </Button>
+       <LanguageToggle />
 
       <div className="flex shrink-0  items-center gap-3 sm:gap-5">
         <Theme />
