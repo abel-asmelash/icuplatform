@@ -51,7 +51,7 @@ const QuestionCard = ({ question, currentUserId }: Props) => {
         {tags.map((tag) => (
           <Link
             key={tag._id}
-            href={ROUTES.TAGS(tag._id.toString())}
+            href={ROUTES.TAGS}
             className="subtle-medium background-light800_dark300 text-light400_light500 flex items-center justify-center gap-2 rounded-md border-none px-4 py-2 uppercase"
           >
             {tag.name}

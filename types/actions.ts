@@ -2,17 +2,17 @@ import { NextResponse } from "next/server";
 
 export type ActionResponse<T = null> =
   // | { success: true; data: T; status?: number }
-  | {
-      success: boolean;
-      data?: T
-      error?: {
-        message: string;
-        details?: Record<string, string[]>;
-      };
-      status?: number;
+  {
+    success: boolean;
+    data?: T;
+    error?: {
+      message: string;
+      details?: Record<string, string[]>;
     };
+    status?: number;
+  };
 
-export type SuccessResponse<T = null> = ActionResponse<T> & { success: true  };
+export type SuccessResponse<T = null> = ActionResponse<T> & { success: true };
 export type ErrorResponse = ActionResponse<undefined> & { success: false };
 export type APIErrorResponse = NextResponse<ErrorResponse>;
 export type APIResponse<T = null> = NextResponse<
@@ -43,7 +43,7 @@ export interface EditQuestionParams extends createQuestionParams {
 export interface GetQuestionParams {
   questionId: string;
 }
- 
+
 // add to types/actions.ts
 export interface Author {
   _id: string;
@@ -65,5 +65,6 @@ export interface PopulatedQuestion {
   updatedAt: string;
 }
 export interface CollectionBaseParams {
-  questionId: string
+  questionId: string;
 }
+ 

@@ -1,16 +1,17 @@
 import {
   ActionResponse,
   ErrorResponse,
-  PaginatedSearchParams,
-} from "../../types/global";
+  PaginatedSearchParams
+} from "../../types/actions";
 import handleError from "../handlers/error";
 import {
+  GetTagQuestionsParams,
   GetTagQuestionsSchema,
   PaginatedSearchParamsSchema,
 } from "../validations";
-
+ 
 import action from "../handlers/action";
-import Question from "@/database/question.model";
+import Question, { IQuestionDoc } from "@/database/question.model";
 import dbConnect from "../mongoose";
 import Tag, { ITagDoc } from "@/database/tag.model";
 
@@ -75,8 +76,7 @@ export const getTags = async (
 export const GetTagQuestions = async (
   params: GetTagQuestionsParams,
 ): Promise<
-  ActionResponse<{ tag: Tag; question: Question[]; isNext: boolean }>
-> => {
+  ActionResponse<{ tag: ITagDoc; questions: IQuestionDoc[]; isNext: boolean }>> => {
   const validationResult = await action({
     params,
     schema: GetTagQuestionsSchema,
@@ -91,27 +91,34 @@ export const GetTagQuestions = async (
   const limit = Number(pageSize);
 
   try {
+    await dbConnect();
+
     const tag = await Tag.findById(tagId);
     if (!tag) throw new Error("Tag not found");
-    const filterQuery: Record<string, unknown> = {};
+
+    const filterQuery: Record<string, unknown> = { tags: tagId };
     if (query) {
-      filterQuery.$or = [{ name: { $regex: query, $options: "i" } }];
+      filterQuery.title = { $regex: query, $options: "i" };
     }
-    const totalQuestions = await Tag.countDocuments(filterQuery);
+
+    const totalQuestions = await Question.countDocuments(filterQuery);
     const questions = await Question.find(filterQuery)
-      .select("_id title views answers upvots downvotes author createAt")
+      .select("_id title views answers upvotes author createdAt tags helpfulBy")
       .populate([
         { path: "author", select: "name image" },
         { path: "tags", select: "name" },
       ])
+      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
+
     const isNext = totalQuestions > skip + questions.length;
+
     return {
       success: true,
       data: {
         tag: JSON.parse(JSON.stringify(tag)),
-        question: JSON.parse(JSON.stringify(questions)),
+        questions: JSON.parse(JSON.stringify(questions)),
         isNext,
       },
     };
