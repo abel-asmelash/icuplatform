@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-
-import QuestionCard from "@/components/card/QuestionCard";
+import Link from "next/link";
+ import QuestionCard from "@/components/card/QuestionCard";
 import LocalSearch from "@/components/search/LocalSearch";
 import Pagination from "@/components/Pagination";
 import { GetTagQuestions } from "@/lib/action/tag.action";
@@ -83,10 +83,25 @@ const TagDetails = async ({ params, searchParams }: RouteParams) => {
             </Suspense>
           ))
         ) : (
-          <p className="text-dark400_light700 paragraph-regular mx-auto max-w-4xl text-center">
+          <p className="text-dark400_light700 paragraph-regular mx-auto max-w-4xl text-center mb-6">
             Geen vragen gevonden voor deze tag
           </p>
         )}
+        <div className="flex gap-4">
+          <Link
+            href="/tags"
+            className="rounded-lg bg-primary-500 px-4  py-2 text-white transition hover:bg-primary-600"
+          >
+            Terug naar Tags
+          </Link>
+
+          <Link
+            href="/"
+            className="rounded-lg border border-slate-300 px-4 py-2 text-dark200_light800 transition hover:bg-slate-100 dark:hover:bg-dark-300"
+          >
+            Home
+          </Link>
+        </div>
       </div>
 
       <Pagination page={page} isNext={isNext || false} />
