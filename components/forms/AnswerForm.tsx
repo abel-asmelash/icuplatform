@@ -139,6 +139,9 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
           )}
         </Button>
       </div>
+      <p className="mt-2 text-right text-xs italic text-dark400_light700 sm:text-sm">
+        Voordat je AI gebruikt: wat zegt jouw eigen inzicht en ervaring over deze vraag?
+      </p>
       <Form {...form}>
         <form
           // eslint-disable-next-line react-hooks/refs -- false positive, handleSubmit only reads editorRef inside the event callback, not during render
