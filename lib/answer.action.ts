@@ -1,5 +1,4 @@
 "use server";
-
 import Answer, { IAnswer } from "@/database/answer.model";
 import { CreateAnswerParams, GetAnswersParams } from "@/types/action";
 import { ActionResponse, ErrorResponse } from "@/types/actions";
@@ -17,6 +16,8 @@ import { revalidatePath } from "next/cache";
 import ROUTES from "@/constants/routes";
 import { z } from "zod";
 import { EditAnswerSchema } from "./validations";
+import { containsProfanity } from "./utils/profanity";
+import { ValidationError } from "./http-error";
 export async function createAnswer(
   params: CreateAnswerParams,
 ): Promise<ActionResponse<IAnswer>> {
@@ -55,7 +56,15 @@ export async function createAnswer(
       { $inc: { answers: 1 } },
       { session },
     );
-
+    // profanity check
+    if (containsProfanity(content)) {
+      return handleError(
+        new ValidationError({
+          content: ["Gebruik alstublieft respectvolle taal in je antwoord."],
+        }),
+        "server",
+      ) as ErrorResponse;
+    }
     await session.commitTransaction();
     revalidatePath(ROUTES.QUESTION(questionId));
 

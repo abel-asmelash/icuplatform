@@ -32,7 +32,9 @@ import { Answer, Collection } from "@/database";
 import { Types } from "mongoose";
 import Interaction from "@/database/interaction.model";
 import { RecommendationParams } from "@/types/action";
-import {generateTagDescription} from "@/lib/tag-description"
+import { generateTagDescription } from "@/lib/tag-description";
+import { containsProfanity } from "../utils/profanity";
+import { ValidationError } from "../http-error";
 export async function createQuestion(
   params: createQuestionParams,
 ): Promise<ActionResponse<IQuestionDoc>> {
@@ -80,11 +82,14 @@ export async function createQuestion(
           { $inc: { questions: 1 } },
           { session },
         );
-      } else { 
-        const description = await generateTagDescription(tag)
-        const [newTag] = await Tag.create([{ name: tag, questions: 1, description }], {
-          session,
-        });
+      } else {
+        const description = await generateTagDescription(tag);
+        const [newTag] = await Tag.create(
+          [{ name: tag, questions: 1, description }],
+          {
+            session,
+          },
+        );
         existingTag = newTag;
       }
 
@@ -93,6 +98,15 @@ export async function createQuestion(
         tag: existingTag._id,
         question: question._id,
       });
+    }
+    // Profanity check
+    if (containsProfanity(content)) {
+      return handleError(
+        new ValidationError({
+          content: ["Gebruik alstublieft respectvolle taal in je vraag."],
+        }),
+        "server",
+      ) as ErrorResponse;
     }
 
     await TagQuestion.insertMany(tagQuestionDocuments, { session });
@@ -166,8 +180,8 @@ export async function editQuestion(
     const newTagDocuments = [];
 
     if (tagsToAdd.length > 0) {
-      for (const tag of tagsToAdd) { 
-        const description = await generateTagDescription(tag)
+      for (const tag of tagsToAdd) {
+        const description = await generateTagDescription(tag);
         const existingTag = await Tag.findOneAndUpdate(
           { name: { $regex: `^${tag}$`, $options: "i" } },
           { $setOnInsert: { name: tag, description }, $inc: { questions: 1 } },
