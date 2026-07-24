@@ -21,7 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ActionResponse } from "@/app/types/global";
+import { ActionResponse } from "@/types/actions";
 import { toast } from "sonner";
 interface AuthFormProps<T extends FieldValues = FieldValues> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -97,7 +97,7 @@ const AuthForm = <T extends FieldValues = FieldValues>({
 
         <Button
           disabled={form.formState.isSubmitting}
-          className="primary-gradient paragraph-medium min-h-12 w-full rounded-2 px-4 py-3 font-inter !text-light-900"
+          className="primary-gradient paragraph-medium min-h-12 w-full rounded-2 px-4 py-3 font-inter text-light-900"
         >
           {form.formState.isSubmitting
             ? formType === "SIGN_IN"

@@ -2,8 +2,8 @@
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 import { signIn } from "@/auth";
-import { AuthCredentials } from "@/app/types/action";
-import { ActionResponse, ErrorResponse } from "@/app/types/global";
+import { AuthCredentials } from "@/types/action";
+import { ActionResponse, ErrorResponse } from "@/types/actions";
 import Account from "../../database/account.model";
 import User from "../../database/user.model";
 import handleError from "../handlers/error";
@@ -50,7 +50,7 @@ export async function signUpWithCredentials(
 
     await session.commitTransaction();
 
-    // wrap signIn to prevent Auth.js internal throws from swallowing success
+    
     try {
       await signIn("credentials", { email, password, redirect: false });
     } catch (signInError) {
