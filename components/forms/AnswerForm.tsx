@@ -140,7 +140,8 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
         </Button>
       </div>
       <p className="mt-2 text-right text-xs italic text-dark400_light700 sm:text-sm">
-        Voordat je AI gebruikt: wat zegt jouw eigen inzicht en ervaring over deze vraag?
+        Vertrouw op je eigen inzicht: wat is jouw antwoord voordat je AI
+        inschakelt?
       </p>
       <Form {...form}>
         <form
