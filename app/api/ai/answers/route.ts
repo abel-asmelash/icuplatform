@@ -5,6 +5,12 @@ import { APIErrorResponse } from "@/types/actions";
 import { groq } from "@ai-sdk/groq";
 import { generateText } from "ai";
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
+import dbConnect from "@/lib/mongoose";
+import AIRequestLog from "@/database/ai-request-log.model";
+
+const RATE_LIMIT = 3;
+const WINDOW_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 const bannedWords = [
   // English
@@ -73,6 +79,7 @@ const bannedWords = [
   "rotzak",
   "pisnicht",
 ];
+
 function containsProfanity(text: string): boolean {
   const normalized = text.toLowerCase();
   return bannedWords.some((word) => {
@@ -80,9 +87,40 @@ function containsProfanity(text: string): boolean {
     return pattern.test(normalized);
   });
 }
+
 export async function POST(req: Request) {
-  const { question, content, userAnswer } = await req.json();
   try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { success: false, error: { message: "Unauthorized" } },
+        { status: 401 },
+      );
+    }
+
+    await dbConnect();
+
+    const windowStart = new Date(Date.now() - WINDOW_MS);
+    const recentCount = await AIRequestLog.countDocuments({
+      userId: session.user.id,
+      createdAt: { $gte: windowStart },
+    });
+
+    if (recentCount >= RATE_LIMIT) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            message:
+              "Je hebt het maximum aantal AI-antwoorden voor vandaag bereikt. Probeer het morgen opnieuw.",
+          },
+        },
+        { status: 429 },
+      );
+    }
+
+    const { question, content, userAnswer } = await req.json();
+
     const validatedData = AIAnswerSchema.safeParse({
       question,
       content,
@@ -91,8 +129,8 @@ export async function POST(req: Request) {
     if (!validatedData.success) {
       throw new ValidationError(validatedData.error.flatten().fieldErrors);
     }
+
     const textToCheck = [question, content, userAnswer].join(" ");
-    
     if (containsProfanity(textToCheck)) {
       throw new ValidationError({
         userAnswer: [
@@ -115,6 +153,9 @@ export async function POST(req: Request) {
       system:
         "You are a knowledgeable and compassionate Christian assistant helping members of a church community understand Scripture and grow in faith. Your answers should be biblically grounded, respectful of different Christian traditions, easy to understand for people of varying biblical knowledge, and encouraging in tone. When citing Scripture, use standard verse references (e.g., John 3:16).",
     });
+
+    await AIRequestLog.create({ userId: session.user.id });
+
     return NextResponse.json(
       {
         success: true,
