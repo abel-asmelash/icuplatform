@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { RequestError, ValidationError } from "../http-error";
 import logger from "@/lib/logger";
+import type { ActionResponse } from "@/types/actions";
 export type ResponseType = "api" | "server";
 
 const formatResponse = (
@@ -22,7 +23,15 @@ const formatResponse = (
     : { status, ...responseContent };
 };
 
-const handleError = (error: unknown, responseType: ResponseType = "server") => {
+function handleError(error: unknown, responseType: "api"): NextResponse;
+function handleError(
+  error: unknown,
+  responseType?: "server",
+): ActionResponse<never>;
+function handleError(
+  error: unknown,
+  responseType: ResponseType = "server",
+): NextResponse | ActionResponse<never> {
   if (error instanceof RequestError) {
     logger.error(
       { err: error },
@@ -58,8 +67,8 @@ const handleError = (error: unknown, responseType: ResponseType = "server") => {
     logger.error(error.message);
     return formatResponse(responseType, 500, error.message);
   }
-  logger.error({err: error}, "An unexpected error occured")
+  logger.error({ err: error }, "An unexpected error occured");
   return formatResponse(responseType, 500, "An unexpected error occurred");
-};
+}
 
 export default handleError;

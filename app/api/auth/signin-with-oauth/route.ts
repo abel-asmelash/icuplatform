@@ -6,7 +6,7 @@ import { SignInWithOAuthSchema } from "@/lib/validations";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 import slugify from "slugify";
-
+import type { ErrorResponse } from "@/types/actions";
 export async function POST(request: Request) {
   const { provider, providerAccountId, user } = await request.json();
 
@@ -96,9 +96,10 @@ export async function POST(request: Request) {
       success: true,
     });
   } catch (error) {
-    if (session) await session.abortTransaction();  
-    return handleError(error, "api");
-  } finally {
-    if (session) session.endSession();
-  }
+  if (session) await session.abortTransaction();
+  const errorResponse = handleError(error, "api") as ErrorResponse;
+  return NextResponse.json(errorResponse, { status: errorResponse.status ?? 500 });
+} finally {
+  if (session) session.endSession();
+}
 }
