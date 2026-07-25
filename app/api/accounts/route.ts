@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
-
 import Account from "@/database/account.model";
 import dbConnect from "@/lib/mongoose";
 import { ForbiddenError } from "@/lib/http-error";
 import handleError from "@/lib/handlers/error";
 import { AccountSchema } from "@/lib/validations";
-import { APIErrorResponse } from "@/app/types/global";
+import { APIErrorResponse } from "@/types/actions";
 
 export async function POST(request: Request) {
   try {

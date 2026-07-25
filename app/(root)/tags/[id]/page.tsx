@@ -34,7 +34,13 @@ export async function generateMetadata({
 
 const TagDetails = async ({ params, searchParams }: RouteParams) => {
   const { id } = await params;
-  const { page, pageSize, query: rawQuery } = await searchParams;
+  const {
+    page: rawPage,
+    pageSize: rawPageSize,
+    query: rawQuery,
+  } = await searchParams;
+  const page = Array.isArray(rawPage) ? rawPage[0] : rawPage;
+  const pageSize = Array.isArray(rawPageSize) ? rawPageSize[0] : rawPageSize;
   const query = Array.isArray(rawQuery) ? rawQuery[0] : rawQuery;
 
   const { success, data, error } = await GetTagQuestions({

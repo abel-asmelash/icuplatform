@@ -3,7 +3,7 @@ import { NotFoundError, ValidationError } from "@/lib/http-error";
 import handleError from "@/lib/handlers/error";
 import { UserSchema } from "@/lib/validations";
 import User from "@/database/user.model";
-import { APIErrorResponse } from "@/app/types/global";
+import { APIErrorResponse } from "@/types/actions";
 
 export async function POST(request: Request) {
   const { email } = await request.json();

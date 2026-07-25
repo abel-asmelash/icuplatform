@@ -3,7 +3,7 @@ import handleError from "@/lib/handlers/error";
 import { NotFoundError, ValidationError } from "@/lib/http-error";
 import dbConnect from "@/lib/mongoose";
 import { AccountSchema } from "@/lib/validations";
-import { APIErrorResponse } from "@/app/types/global";
+import { APIErrorResponse } from "@/types/actions";
 import Account from "@/database/account.model";
 
 // GET /api/users/[id]

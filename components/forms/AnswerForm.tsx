@@ -83,7 +83,7 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
         questionContent,
         userAnswer,
       );
-      if (!result.success) {
+      if (!result.success || !result.data) {
         return toast.error("Error", {
           description: result.error?.message,
         });

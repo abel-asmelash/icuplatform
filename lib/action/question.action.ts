@@ -23,9 +23,8 @@ import handleError from "../handlers/error";
 import { IncrementViewsParams } from "@/types/action";
 import Tag, { ITagDoc } from "@/database/tag.model";
 import TagQuestion from "@/database/tag-question.model";
-import mongoose, { type FilterQuery } from "mongoose";
+import mongoose from "mongoose";
 import dbConnect from "../mongoose";
-import Question, { IQuestionDoc } from "@/database/question.model";
 import { NotFoundError, UnauthorizedError } from "../http-error";
 import { revalidatePath } from "next/cache";
 import { Answer, Collection } from "@/database";
@@ -35,9 +34,10 @@ import { RecommendationParams } from "@/types/action";
 import { generateTagDescription } from "@/lib/tag-description";
 import { containsProfanity } from "../utils/profanity";
 import { ValidationError } from "../http-error";
+import Question from "@/database/question.model";
 export async function createQuestion(
   params: createQuestionParams,
-): Promise<ActionResponse<IQuestionDoc>> {
+): Promise<ActionResponse<PopulatedQuestion>> {
   const validationResult = await action({
     params,
     schema: AskQuestionSchema,
@@ -133,7 +133,7 @@ export async function createQuestion(
 
 export async function editQuestion(
   params: EditQuestionParams,
-): Promise<ActionResponse<IQuestionDoc>> {
+): Promise<ActionResponse<PopulatedQuestion>> {
   const validationResult = await action({
     params,
     schema: EditQuestionSchema,
@@ -291,7 +291,7 @@ export async function getRecommendedQuestions({
 
   const uniqueTagIds = [...new Set(allTags)];
 
-  const recommendedQuery: FilterQuery<typeof Question> = {
+  const recommendedQuery: Record<string, unknown> = {
     author: { $ne: new Types.ObjectId(userId) },
   };
 
@@ -343,7 +343,7 @@ export async function getQuestions(
   const skip = (Number(page) - 1) * Number(pageSize);
   const limit = Number(pageSize);
 
-  const filterQuery: FilterQuery<typeof Question> = {};
+  const filterQuery: Record<string, unknown> = {};
 
   if (filter === "recommended") {
     const userId = validationResult?.session?.user?.id;

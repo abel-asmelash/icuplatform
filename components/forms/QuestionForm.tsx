@@ -23,15 +23,14 @@ import { MDXEditorMethods } from "@mdxeditor/editor";
 import ROUTES from "@/constants/routes";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
- 
+import type { PopulatedQuestion } from "@/types/actions";
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
 interface Params {
-  question?: Question;
+  question?: PopulatedQuestion;
   isEdit?: boolean;
 }
 
- 
 const QuestionForm = ({ question, isEdit = false }: Params) => {
   const router = useRouter();
   const editorRef = useRef<MDXEditorMethods>(null);
@@ -42,7 +41,7 @@ const QuestionForm = ({ question, isEdit = false }: Params) => {
     defaultValues: {
       title: question?.title || "",
       content: question?.content || "",
-      tags: question?.tags.map((tag: Tag) => tag.name) || [],
+      tags: question?.tags.map((tag) => tag.name) || [],
     },
   });
 
@@ -84,12 +83,11 @@ const QuestionForm = ({ question, isEdit = false }: Params) => {
     data: z.infer<typeof AskQuestionSchema>,
   ) => {
     startTransition(async () => {
-      
       if (isEdit && question) {
         const result = await editQuestion({
           questionId: question._id,
           ...data,
-        });  
+        });
 
         if (result.success) {
           toast.success("Question updated successfully");
@@ -97,10 +95,9 @@ const QuestionForm = ({ question, isEdit = false }: Params) => {
         } else {
           toast.error(result.error?.message || "Something went wrong");
         }
-        return;  
+        return;
       }
 
-       
       const result = await createQuestion(data);
       if (result.success) {
         toast.success("Question created successfully");
@@ -209,7 +206,7 @@ const QuestionForm = ({ question, isEdit = false }: Params) => {
           <Button
             type="submit"
             disabled={isPending}
-            className="primary-gradient w-fit !text-light-900 mt-10"
+            className="primary-gradient w-fit text-light-900 mt-10"
           >
             {isPending ? (
               <>
@@ -217,7 +214,6 @@ const QuestionForm = ({ question, isEdit = false }: Params) => {
                 <span>Submitting</span>
               </>
             ) : (
-               
               <>{isEdit ? "Edit Question" : "Ask A Question"}</>
             )}
           </Button>

@@ -15,10 +15,11 @@ import Tag, { ITagDoc } from "@/database/tag.model";
 import type { PopulatedQuestion } from "../../types/actions";
 import Question from "@/database/question.model";
 import type { SerializedTag } from "@/types/actions";
+ 
 
 export const getTags = async (
   params: PaginatedSearchParams,
-): Promise<ActionResponse<{ tags: Tag[]; isNext: boolean }>> => {
+): Promise<ActionResponse<{ tags: SerializedTag[]; isNext: boolean }>> => {
   const validationResult = await action({
     params,
     schema: PaginatedSearchParamsSchema,

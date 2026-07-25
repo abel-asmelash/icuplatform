@@ -1,10 +1,10 @@
 import Link from "next/link";
 import ROUTES from "@/constants/routes";
-import { getTechBibleInfo } from "@/lib/utils";  
+import { getTechBibleInfo } from "@/lib/utils";
+
 interface TagPageCardProps {
   _id: string;
   name: string;
-  tag:string
   questions?: number;
   description?: string;
 }

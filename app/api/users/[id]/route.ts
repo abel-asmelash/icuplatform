@@ -1,4 +1,4 @@
-import { APIErrorResponse } from "@/app/types/global";
+import { APIErrorResponse } from "@/types/actions";
 import handleError from "@/lib/handlers/error";
 import { NotFoundError } from "@/lib/http-error";
 import dbConnect from "@/lib/mongoose";
