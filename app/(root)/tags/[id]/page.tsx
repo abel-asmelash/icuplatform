@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
- import QuestionCard from "@/components/card/QuestionCard";
+import QuestionCard from "@/components/card/QuestionCard";
 import LocalSearch from "@/components/search/LocalSearch";
 import Pagination from "@/components/Pagination";
 import { GetTagQuestions } from "@/lib/action/tag.action";
@@ -34,7 +34,8 @@ export async function generateMetadata({
 
 const TagDetails = async ({ params, searchParams }: RouteParams) => {
   const { id } = await params;
-  const { page, pageSize, query } = await searchParams;
+  const { page, pageSize, query: rawQuery } = await searchParams;
+  const query = Array.isArray(rawQuery) ? rawQuery[0] : rawQuery;
 
   const { success, data, error } = await GetTagQuestions({
     tagId: id,
