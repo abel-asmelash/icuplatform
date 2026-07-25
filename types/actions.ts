@@ -63,8 +63,17 @@ export interface PopulatedQuestion {
   author: Author;
   createdAt: string;
   updatedAt: string;
+  helpfulBy: string[];
+  helpfulCount: number;
 }
 export interface CollectionBaseParams {
   questionId: string;
 }
- 
+export interface SerializedTag {
+  _id: string;
+  name: string;
+  description?: string;
+  questions: number;
+  createdAt: string;
+  updatedAt: string;
+}

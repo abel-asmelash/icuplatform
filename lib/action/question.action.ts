@@ -329,7 +329,7 @@ export async function getRecommendedQuestions({
 // part 2
 export async function getQuestions(
   params: PaginatedSearchParams,
-): Promise<ActionResponse<{ question: IQuestionDoc[]; isNext: boolean }>> {
+): Promise<ActionResponse<{ question: PopulatedQuestion[]; isNext: boolean }>> {
   const validationResult = await action({
     params,
     schema: PaginatedSearchParamsSchema,
@@ -487,8 +487,14 @@ export async function toggleQuestionHelpful(params: {
     return handleError(error) as ErrorResponse;
   }
 }
+
 export async function getHotQuestions(): Promise<
-  ActionResponse<IQuestionDoc[]>
+  ActionResponse<
+    Pick<
+      PopulatedQuestion,
+      "_id" | "title" | "views" | "upvotes" | "createdAt"
+    >[]
+  >
 > {
   try {
     await dbConnect();
@@ -503,6 +509,7 @@ export async function getHotQuestions(): Promise<
     return handleError(error) as ErrorResponse;
   }
 }
+
 // Delete question functionality
 export async function deleteQuestion(
   params: z.infer<typeof DeleteQuestionSchema>,

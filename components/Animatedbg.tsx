@@ -70,6 +70,7 @@ function FloatingParticles({ count = 20 }: { count?: number }) {
   const [particles, setParticles] = useState<Particle[]>([]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: Math.random() must run client-only to avoid hydration mismatch, can't be computed during render/useMemo
     setParticles(
       Array.from({ length: count }, (_, i) => ({
         id: i,
@@ -157,7 +158,7 @@ export default function AnimatedBackground({
   return (
     <div className="absolute inset-0 overflow-hidden -z-10">
       {!isCard && (
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-neutral-950 to-black" />
+        <div className="absolute inset-0 bg-linear-to-br from-black via-neutral-950 to-black" />
       )}
 
       {blobs.map((blob, i) => (

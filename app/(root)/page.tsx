@@ -8,21 +8,10 @@ import DataRenderer from "@/components/DataRenderer";
 import { getQuestions } from "@/lib/action/question.action";
 import { EMPTY_QUESTION } from "@/constants/states";
 import Pagination from "@/components/Pagination";
-
+ 
+import type { PopulatedQuestion } from "@/types/actions";
 interface SearchParams {
   searchParams: Promise<{ [key: string]: string }>;
-}
-
- 
-interface Question {
-  _id: string;
-  title: string;
-  tags: { _id: string; name: string }[];
-  author: { _id: string; name: string; image: string };
-  createdAt: Date;
-  answers: number;
-  upvotes: number;
-  views: number;
 }
 
 const Home = async ({ searchParams }: SearchParams) => {
@@ -35,8 +24,7 @@ const Home = async ({ searchParams }: SearchParams) => {
     filter: filter || "",
   });
 
- 
-   const {question, isNext} = data || {};
+  const { question, isNext } = data || {};
 
   return (
     <>
@@ -49,11 +37,11 @@ const Home = async ({ searchParams }: SearchParams) => {
 
       <section className="mt-11">
         <LocalSearch
-         route="/"
+          route="/"
           imgSrc="/assets/search.svg"
           placeholder="Zoek vragen..."
           otherClasses="flex-1"
-          iconPosition="left" 
+          iconPosition="left"
         />
       </section>
 
@@ -64,16 +52,15 @@ const Home = async ({ searchParams }: SearchParams) => {
         error={error}
         data={question}
         empty={EMPTY_QUESTION}
-        render={(questions) => (
+        render={(questions: PopulatedQuestion[]) => (
           <div className="mt-10 flex w-full flex-col gap-6">
             {questions.map((question) => (
               <QuestionCard key={question._id} question={question} />
-
             ))}
           </div>
         )}
       />
-      <Pagination page={page} isNext={isNext || false}/>
+      <Pagination page={page} isNext={isNext || false} />
     </>
   );
 };

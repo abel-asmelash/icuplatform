@@ -5,9 +5,8 @@ import TagCard from "../cards/TagCard";
 import { getHotQuestions } from "@/lib/action/question.action";
 import DataRenderer from "../DataRenderer";
 import { getTopTags } from "@/lib/action/tag.action";
-import {  ITagDoc } from "@/database/tag.model";
+ 
 const RightSideBar = async () => {
-
   const [
     { success, data: hotQuestions, error },
     { success: tagSuccess, data: tags, error: tagError },
@@ -24,7 +23,7 @@ const RightSideBar = async () => {
           }}
           success={success}
           error={error}
-          render={(questions: Question[]) => (
+          render={(questions) => (
             <div className="mt-7 flex w-full flex-col gap-7.5">
               {questions.map(({ _id, title }) => (
                 <Link
@@ -42,7 +41,6 @@ const RightSideBar = async () => {
           )}
         />
       </div>
-
       <div className="mt-16">
         <h3 className="h3-bold text-dark200_light900 ">
           Populaire trefwoorden
@@ -56,7 +54,7 @@ const RightSideBar = async () => {
             }}
             success={tagSuccess}
             error={tagError}
-            render={(topTags: Tag[]) => (
+            render={(topTags) => (
               <div className="mt-7 flex w-full flex-col gap-4">
                 {topTags.map(({ _id, name, questions }) => (
                   <TagCard

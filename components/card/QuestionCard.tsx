@@ -1,28 +1,13 @@
 import Link from "next/link";
 import ROUTES from "@/constants/routes";
 import { getTimeStamp } from "@/lib/utils";
-import {
-  faThumbsUp,
-  faMessage,
-  faEye,
-} from "@fortawesome/free-solid-svg-icons";
+import { faMessage, faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import HelpfulQuestionButton from "@/components/card/HelpfulQuestionButton";
- 
- 
+import type { PopulatedQuestion } from "@/types/actions";
 import QuestionActions from "@/components/QuestionActions";
 interface Props {
-  question: {
-    _id: string;
-    title: string;
-    tags: { _id: string; name: string }[];
-    author: { _id: string; name: string; image: string };
-    upvotes: number;
-    views: number;
-    answers: number;
-    createdAt: Date;
-    helpfulBy: string[];
-  };
+  question: PopulatedQuestion;
   currentUserId?: string;
 }
 
@@ -33,7 +18,6 @@ const QuestionCard = ({ question, currentUserId }: Props) => {
     !!currentUserId && (helpfulBy ?? []).includes(currentUserId);
   return (
     <div className="card-wrapper rounded-[10px] p-9 sm:px-11">
-   
       <div className="flex  flex-col-reverse items-start justify-between gap-5 sm:flex-row">
         <div>
           <span className="subtle-regular text-dark400_light700 line-clamp-1 flex sm:hidden">

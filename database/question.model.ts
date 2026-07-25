@@ -1,5 +1,5 @@
 import { Schema, model, models, Types, Document } from "mongoose";
-import { number } from "zod";
+ 
 
 export interface IQuestion {
   title: string;

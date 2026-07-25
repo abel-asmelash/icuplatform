@@ -1,7 +1,7 @@
 import {
   ActionResponse,
   ErrorResponse,
-  PaginatedSearchParams
+  PaginatedSearchParams,
 } from "../../types/actions";
 import handleError from "../handlers/error";
 import {
@@ -9,11 +9,12 @@ import {
   GetTagQuestionsSchema,
   PaginatedSearchParamsSchema,
 } from "../validations";
- 
 import action from "../handlers/action";
-import Question, { IQuestionDoc } from "@/database/question.model";
 import dbConnect from "../mongoose";
 import Tag, { ITagDoc } from "@/database/tag.model";
+import type { PopulatedQuestion } from "../../types/actions";
+import Question from "@/database/question.model";
+import type { SerializedTag } from "@/types/actions";
 
 export const getTags = async (
   params: PaginatedSearchParams,
@@ -76,7 +77,12 @@ export const getTags = async (
 export const GetTagQuestions = async (
   params: GetTagQuestionsParams,
 ): Promise<
-  ActionResponse<{ tag: ITagDoc; questions: IQuestionDoc[]; isNext: boolean }>> => {
+  ActionResponse<{
+    tag: ITagDoc;
+    questions: PopulatedQuestion[];
+    isNext: boolean;
+  }>
+> => {
   const validationResult = await action({
     params,
     schema: GetTagQuestionsSchema,
@@ -103,7 +109,9 @@ export const GetTagQuestions = async (
 
     const totalQuestions = await Question.countDocuments(filterQuery);
     const questions = await Question.find(filterQuery)
-      .select("_id title views answers upvotes author createdAt tags helpfulBy")
+      .select(
+        "_id title views answers upvotes author createdAt tags helpfulBy helpfulCount",
+      )
       .populate([
         { path: "author", select: "name image" },
         { path: "tags", select: "name" },
@@ -127,7 +135,7 @@ export const GetTagQuestions = async (
   }
 };
 
-export const getTopTags = async (): Promise<ActionResponse<ITagDoc[]>> => {
+export const getTopTags = async (): Promise<ActionResponse<SerializedTag[]>> => {
   try {
     await dbConnect();
 

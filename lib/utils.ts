@@ -29,7 +29,7 @@ export const getTechBibleClassName = (tagName: string) => {
 };
 
 // gettimeStamp
-export function getTimeStamp(date: Date): string {
+export function getTimeStamp(date: Date | string): string {
   const now = new Date();
   const diff = now.getTime() - new Date(date).getTime();
 
