@@ -100,6 +100,7 @@ const QuestionActions = ({ questionId }: Props) => {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         onDelete={() => deleteQuestion({ questionId })}
+        redirectTo="/"
       />
     </>
   );

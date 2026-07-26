@@ -1,4 +1,5 @@
 "use server";
+import { revalidatePath } from "next/cache";
 import type {
   ActionResponse,
   ErrorResponse,
@@ -26,7 +27,6 @@ import TagQuestion from "@/database/tag-question.model";
 import mongoose from "mongoose";
 import dbConnect from "../mongoose";
 import { NotFoundError, UnauthorizedError } from "../http-error";
-import { revalidatePath } from "next/cache";
 import { Answer, Collection } from "@/database";
 import { Types } from "mongoose";
 import Interaction from "@/database/interaction.model";
@@ -223,7 +223,8 @@ export async function editQuestion(
 
     await question.save({ session });
     await session.commitTransaction();
-
+    revalidatePath("/");
+    revalidatePath(`/questions/${questionId}`);
     return { success: true, data: JSON.parse(JSON.stringify(question)) };
   } catch (error) {
     await session.abortTransaction();

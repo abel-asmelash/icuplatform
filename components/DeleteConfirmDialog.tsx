@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +19,7 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onDelete: () => Promise<{ success: boolean; error?: { message: string } }>;
+  redirectTo?: string;
 }
 
 const DeleteConfirmDialog = ({
@@ -25,8 +27,10 @@ const DeleteConfirmDialog = ({
   open,
   onOpenChange,
   onDelete,
+  redirectTo,
 }: Props) => {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const handleDelete = () => {
     startTransition(async () => {
@@ -34,6 +38,11 @@ const DeleteConfirmDialog = ({
       if (result.success) {
         toast.success(`${title} succesvol verwijderd`);
         onOpenChange(false);
+
+        if (redirectTo) {
+          router.push(redirectTo);
+        }
+        router.refresh();
       } else {
         toast.error(result.error?.message || "Er ging iets mis");
       }
