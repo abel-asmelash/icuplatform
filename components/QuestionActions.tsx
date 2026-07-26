@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
- import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/drawer";
 import DeleteConfirmDialog from "@/components/DeleteConfirmDialog";
 import { deleteQuestion } from "@/lib/action/question.action";
- 
 
 interface Props {
   questionId: string;
@@ -28,7 +27,13 @@ const QuestionActions = ({ questionId }: Props) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const router = useRouter();
-   const isDesktop = useMediaQuery("(min-width: 640px)");
+  const isDesktop = useMediaQuery("(min-width: 640px)");
+
+  const mounted = useSyncExternalStore(
+    () => () => {}, 
+    () => true, 
+    () => false, 
+  );
 
   const triggerButton = (
     <button className="flex items-center justify-center rounded-full p-2 text-dark400_light700 hover:bg-light-800 hover:text-dark-300 dark:hover:bg-dark-400 dark:hover:text-light-800 transition-colors">
@@ -44,6 +49,20 @@ const QuestionActions = ({ questionId }: Props) => {
     setDrawerOpen(false);
     setDeleteDialogOpen(true);
   };
+
+  if (!mounted) {
+    return (
+      <>
+        {triggerButton}
+        <DeleteConfirmDialog
+          title="Vraag"
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+          onDelete={() => deleteQuestion({ questionId })}
+        />
+      </>
+    );
+  }
 
   return (
     <>
