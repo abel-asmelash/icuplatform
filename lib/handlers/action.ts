@@ -2,7 +2,7 @@
 
 import { ZodError, ZodSchema } from "zod";
 import { Session } from "next-auth";
- 
+
 import { auth } from "@/auth";
 import { UnauthorizedError, ValidationError } from "../http-error";
 import dbConnect from "../mongoose";
@@ -31,15 +31,11 @@ async function action<T>({
       }
     }
   }
+ 
+  const session: Session | null = await auth();
 
-  let session: Session | null = null;
-
-  if (authorize) {
-    session = await auth();
-
-    if (!session) {
-      return new UnauthorizedError();
-    }
+  if (authorize && !session) {
+    return new UnauthorizedError();
   }
 
   await dbConnect();
