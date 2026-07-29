@@ -21,7 +21,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
           </div>
           <div className="space-y-2.5 animate-fade-in">
             <h1 className="h2-bold text-dark100 dark:text-light-900 animate-slide-down">
-              Join Icu{" "}
+              Welkom Bij ICU{" "}
               <span className="text-yellow-400 inline-block hover:scale-110 hover:rotate-3 transition-transform duration-300 animate-glow-text">
                 Q&A
               </span>{" "}
