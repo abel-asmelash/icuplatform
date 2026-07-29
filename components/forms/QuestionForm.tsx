@@ -214,7 +214,7 @@ const QuestionForm = ({ question, isEdit = false }: Params) => {
                 <span>Submitting</span>
               </>
             ) : (
-              <>{isEdit ? "Edit Question" : "Ask A Question"}</>
+              <>{isEdit ? "Bewerk vraag" : "Stel een Vraag"}</>
             )}
           </Button>
         </div>
