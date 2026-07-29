@@ -27,7 +27,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
               </span>{" "}
               Platform
             </h1>
-            <p className="paragraph-regular text-dark500 dark:text-light-400 animate-slide-up animation-delay-300 hover:translate-x-2 transition-transform duration-300">
+            <p className="paragraph-regular font-medium text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-amber-300 animate-slide-up animation-delay-300 hover:translate-x-2 hover:scale-105 transition-all duration-300">
               Krijg antwoord op je bijbelse vragen
             </p>
           </div>
