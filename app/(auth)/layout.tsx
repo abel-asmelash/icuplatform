@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 import SocialAuthForm from "@/components/forms/SocialAuthForm";
 import Image from "next/image";
- import AuroraBg from "@/components/AuroraBg";
- import Animatedbg from "@/components/Animatedbg"
+import AuroraBg from "@/components/AuroraBg";
+import Animatedbg from "@/components/Animatedbg";
 const AuthLayout = ({ children }: { children: ReactNode }) => {
   return (
     <main className="flex min-h-screen items-center justify-center bg-auth-light px-4 py-10">
@@ -53,7 +53,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
             <div className="w-0 h-px bg-linear-to-r from-yellow-400/0 via-yellow-400/40 to-yellow-400/0 mx-auto mt-2 animate-expand-width"></div>
 
             <span className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-300/70 font-light tracking-wider uppercase block mt-2 animate-slide-up animation-delay-200 hover:tracking-[0.2em] transition-all duration-500">
-              — James 1:5
+              — Jakobus 1:5
             </span>
           </div>
         </div>
