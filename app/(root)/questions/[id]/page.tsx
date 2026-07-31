@@ -51,7 +51,7 @@ const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
   const  {success, data: question} = await getQuestion({questionId: id})
  
 after(async () => {
-  console.log("AFTER CALLBACK FIRED for question:", id);
+   
   try {
     await incrementViews({ questionId: id });
   } catch (err) {
