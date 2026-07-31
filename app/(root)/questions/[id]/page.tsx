@@ -6,17 +6,17 @@ import TagCard from "@/components/cards/TagCard";
 import Link from "next/link";
 import type { RouteParams } from "@/types/actions";
 import { Preview } from "../../../../components/editor/Preview";
- import { incrementViews } from "@/lib/action/question.action";
- import {after} from "next/server"
+import { incrementViews } from "@/lib/action/question.action";
+import { after } from "next/server";
 import { getQuestion } from "@/lib/action/question.action";
- import { notFound } from "next/navigation";
+import { notFound } from "next/navigation";
 import AnswerForm from "@/components/forms/AnswerForm";
 import { getAnswers } from "@/lib/answer.action";
 import AllAnswers from "@/components/answers/AllAnswers";
 import { Suspense } from "react";
 import SaveQuestion from "@/components/questions/SaveQuestion";
 import { hasSaveQuestion } from "@/lib/action/collection.action";
-import type {Metadata} from "next"
+import type { Metadata } from "next";
 
 export async function generateMetadata({
   params,
@@ -45,33 +45,35 @@ export async function generateMetadata({
 }
 
 const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
-    
   const { id } = await params;
-   const { page } = await searchParams;
-  const  {success, data: question} = await getQuestion({questionId: id})
- 
-after(async () => {
-   
-  try {
-    await incrementViews({ questionId: id });
-  } catch (err) {
-    console.error("Failed to increment views:", err);
-  }
-});
-  
-  if(!success || !question)  return notFound()
-    const {success: areAnswersLoaded, data:answersResult, error:answersError} = await getAnswers({
-  questionId: id, 
-  page:1,
-  pageSize:1,
-  filter:'latest'
-  })
-  console.log("ANSWERS", answersResult)
- 
-const hasSavedQuestionPromise = hasSaveQuestion({
-  questionId:question._id,
-})
-const { author, createdAt, answers, views, tags, content, title} = question ;
+  const { page } = await searchParams;
+  const { success, data: question } = await getQuestion({ questionId: id });
+
+  after(async () => {
+    try {
+      await incrementViews({ questionId: id });
+    } catch (err) {
+      console.error("Failed to increment views:", err);
+    }
+  });
+
+  if (!success || !question) return notFound();
+  const {
+    success: areAnswersLoaded,
+    data: answersResult,
+    error: answersError,
+  } = await getAnswers({
+    questionId: id,
+    page: 1,
+    pageSize: 1,
+    filter: "latest",
+  });
+  console.log("ANSWERS", answersResult);
+
+  const hasSavedQuestionPromise = hasSaveQuestion({
+    questionId: question._id,
+  });
+  const { author, createdAt, answers, views, tags, content, title } = question;
 
   return (
     <>
@@ -90,9 +92,11 @@ const { author, createdAt, answers, views, tags, content, title} = question ;
             </Link>
           </div>
           <div className="flex item-center justify-end gap-4">
-            
             <Suspense fallback={<div>Loading...</div>}>
-              <SaveQuestion questionId={question._id} hasSavedQuestionPromise={hasSavedQuestionPromise}/>
+              <SaveQuestion
+                questionId={question._id}
+                hasSavedQuestionPromise={hasSavedQuestionPromise}
+              />
             </Suspense>
           </div>
         </div>
@@ -146,8 +150,7 @@ const { author, createdAt, answers, views, tags, content, title} = question ;
       <section className="my-5">
         <AllAnswers
           page={Number(page) || 1}
-          isNext={answersResult?.isNext || false
-          }
+          isNext={answersResult?.isNext || false}
           data={answersResult?.answers}
           success={areAnswersLoaded}
           error={answersError}
