@@ -50,9 +50,14 @@ const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
    const { page } = await searchParams;
   const  {success, data: question} = await getQuestion({questionId: id})
  
- after(async () =>{
- await incrementViews({ questionId: id })
- })
+after(async () => {
+  console.log("AFTER CALLBACK FIRED for question:", id);
+  try {
+    await incrementViews({ questionId: id });
+  } catch (err) {
+    console.error("Failed to increment views:", err);
+  }
+});
   
   if(!success || !question)  return notFound()
     const {success: areAnswersLoaded, data:answersResult, error:answersError} = await getAnswers({
